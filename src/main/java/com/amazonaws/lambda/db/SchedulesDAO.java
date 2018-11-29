@@ -1,7 +1,9 @@
 package com.amazonaws.lambda.db;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Time;
 
 import com.amazonaws.lambda.model.Schedule;
 public class SchedulesDAO {
@@ -64,8 +66,8 @@ public class SchedulesDAO {
 	public boolean updateSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE Schedules SET (startDate,endDate) values(?,?);");
-			ps.setString(1, schedule.startDate);
-			ps.setString(2, schedule.endDate);
+			ps.setDate(1, schedule.startDate);
+			ps.setDate(2, schedule.endDate);
 
 			int numAffected = ps.executeUpdate();
 
@@ -80,14 +82,14 @@ public class SchedulesDAO {
 
 	private Schedule generateSchedule(ResultSet resultSet) throws Exception {
 		String sId = resultSet.getString("sId");
-		String initDate = resultSet.getString("initDate");
-		String initTime = resultSet.getString("initTime");
+		Date initDate = resultSet.getDate("initDate");
+		Time initTime = resultSet.getTime("initTime");
 		String orgId = resultSet.getString("orgId");
-		String startDate = resultSet.getString("startDate");
-		String endDate = resultSet.getString("endDate");
+		Date startDate = resultSet.getDate("startDate");
+		Date endDate = resultSet.getDate("endDate");
 		String startTime = resultSet.getString("startTime");
 		String endTime = resultSet.getString("endTime");
-		String timeSlotDuration = resultSet.getString("tsDuration");
+		int timeSlotDuration = resultSet.getInt("tsDuration");
 		String secretCode = resultSet.getString("secretCode");
 		return new Schedule(sId,initDate,initTime,orgId,startDate,endDate,
 				startTime,endTime,timeSlotDuration,secretCode);

@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.Random;
 
 import org.json.simple.JSONObject;
@@ -23,9 +25,9 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
-	boolean createSchedule(String sId,String initDate, String initTime,
-			String startDate,String endDate,String startTime, String endTime,
-			String tsDuration) throws Exception {
+	boolean createSchedule(Date initDate, Time initTime,
+			Date startDate,Date endDate,String startTime, String endTime,
+			int tsDuration) throws Exception {
 		if(logger !=null) {
 			logger.log("in createSchedule");
 		}
@@ -35,7 +37,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		String sId = initDate + organizerId + initTime;
 		String secretCode = sId+organizerId;
 		Schedule exist = dao.getSchedule(sId);
-		Schedule schedule = new Schedule(initDate,initTime,organizerId, sId, startDate,
+		Schedule schedule = new Schedule(sId,initDate,initTime,organizerId, startDate,
 				endDate,startTime,endTime, tsDuration, secretCode);
 		if(exist ==null) {
 			return dao.addSchedule(schedule);
@@ -98,11 +100,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
     		CreateScheduleResponse resp;
 
     		try {
-    			if(createSchedule(req.sId,req.initDate,req.initTime,req.orgId,req.startDate,req.endDate,
-    					req.startTime,req.endTime,req.tsDuration,req.secretCode));
+    			if(createSchedule(req.initDate,req.initTime,req.startDate,req.endDate,
+    					req.startTime,req.endTime,req.tsDuration));
     		}
     		catch(Exception e) {
-    			resp = new CreateScheduleResponse("Unable to create schedule: " + req.arg1);
+    			resp = new CreateScheduleResponse("Unable to create schedule: " + req.sId);
     		}
 
 

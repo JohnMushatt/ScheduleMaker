@@ -1,21 +1,24 @@
 package com.amazonaws.lambda.model;
 
+import java.sql.Date;
+import java.sql.Time;
+
 public class Schedule {
 
-	public final String initialDate;
-	public final String initialTime;
+	public final Date initialDate;
+	public final Time initialTime;
 	public final String organizerId;
 	public final String scheduleId;
-	public final String timeslotDuration;
+	public final int timeslotDuration;
 	public final String secretCode;
-	public String startDate;
-	public String endDate;
+	public Date startDate;
+	public Date endDate;
 	public final String startTime;
 	public final String endTime;
 
 
-	public Schedule(String initDate, String initTime, String orgId, String sId, String startDate,String endDate,
-			String startTime, String endTime, String tsDuration,String secretCode) {
+	public Schedule(String sId, Date initDate, Time initTime, String orgId, Date startDate,Date endDate,
+			String startTime, String endTime, int tsDuration,String secretCode) {
 		this.initialDate=initDate;
 		this.initialTime=initTime;
 		this.organizerId=orgId;
