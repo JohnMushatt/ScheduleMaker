@@ -104,7 +104,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
     					req.startTime,req.endTime,req.tsDuration));
     		}
     		catch(Exception e) {
-    			resp = new CreateScheduleResponse("Unable to create schedule: " + req.sId);
+    			resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate);
     		}
 
 
@@ -113,6 +113,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
           logger.log(responseJson.toJSONString());
           OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
           writer.write(responseJson.toJSONString());
+          System.out.println("here");
           writer.close();
     }
 

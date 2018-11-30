@@ -108,14 +108,14 @@ public class SchedulesDAO {
 			ps = conn.prepareStatement("INSERT INTO Schedules (sId,initDate,initTime,orgId,startDate,endDate,startTime,endTime,"
 					+ "tsDuration,secretCode) values(?,?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.scheduleId);
-			ps.setDate(2, null);
-			ps.setDate(3,null);
+			ps.setDate(2, schedule.initialDate);
+			ps.setTime(3,schedule.initialTime);
 			ps.setString(4, schedule.organizerId);
-			ps.setDate(5, null);
-			ps.setDate(6, null);
+			ps.setDate(5, schedule.startDate);
+			ps.setDate(6, schedule.endDate);
 			ps.setString(7, schedule.startTime);
 			ps.setString(8, schedule.endTime);
-			ps.setInt(9, 0);
+			ps.setInt(9, schedule.timeslotDuration);
 			ps.setString(10,schedule.secretCode);
 			ps.execute();
 			System.out.println("Succesfully added schedule: " + schedule.scheduleId);;
