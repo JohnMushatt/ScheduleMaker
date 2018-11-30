@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.Date;
-import java.sql.Time;
 
 import org.junit.Test;
 
@@ -31,8 +29,8 @@ public class createScheduleHandlerTest {
     public void testCreateScheduleHandler() throws IOException {
         CreateScheduleHandler handler = new CreateScheduleHandler();
 
-        CreateScheduleRequest csr = new CreateScheduleRequest(new Date(10, 10, 10)
-        		, new Time(8, 0, 0), new Date(10,10,10),new Date(10,10,10),
+        CreateScheduleRequest csr = new CreateScheduleRequest("2010-10-10"
+        		, "12:00", "2010-10-10","2010-10-10",
         		"20:00","10:00",20);
         String addRequest = new Gson().toJson(csr);
         String jsonRequest = new Gson().toJson(new PostRequest(addRequest));

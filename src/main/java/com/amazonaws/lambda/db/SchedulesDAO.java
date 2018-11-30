@@ -1,9 +1,7 @@
 package com.amazonaws.lambda.db;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Time;
 
 import com.amazonaws.lambda.model.Schedule;
 public class SchedulesDAO {
@@ -66,8 +64,8 @@ public class SchedulesDAO {
 	public boolean updateSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE Schedules SET (startDate,endDate) values(?,?);");
-			ps.setDate(1, schedule.startDate);
-			ps.setDate(2, schedule.endDate);
+			ps.setString(1, schedule.startDate);
+			ps.setString(2, schedule.endDate);
 
 			int numAffected = ps.executeUpdate();
 
@@ -82,11 +80,11 @@ public class SchedulesDAO {
 
 	private Schedule generateSchedule(ResultSet resultSet) throws Exception {
 		String sId = resultSet.getString("sId");
-		Date initDate = resultSet.getDate("initDate");
-		Time initTime = resultSet.getTime("initTime");
+		String initDate = resultSet.getString("initDate");
+		String initTime = resultSet.getString("initTime");
 		String orgId = resultSet.getString("orgId");
-		Date startDate = resultSet.getDate("startDate");
-		Date endDate = resultSet.getDate("endDate");
+		String startDate = resultSet.getString("startDate");
+		String endDate = resultSet.getString("endDate");
 		String startTime = resultSet.getString("startTime");
 		String endTime = resultSet.getString("endTime");
 		int timeSlotDuration = resultSet.getInt("tsDuration");
@@ -108,11 +106,11 @@ public class SchedulesDAO {
 			ps = conn.prepareStatement("INSERT INTO Schedules (sId,initDate,initTime,orgId,startDate,endDate,startTime,endTime,"
 					+ "tsDuration,secretCode) values(?,?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.scheduleId);
-			ps.setDate(2, schedule.initialDate);
-			ps.setTime(3,schedule.initialTime);
+			ps.setString(2, schedule.initialDate);
+			ps.setString(3,schedule.initialTime);
 			ps.setString(4, schedule.organizerId);
-			ps.setDate(5, schedule.startDate);
-			ps.setDate(6, schedule.endDate);
+			ps.setString(5, schedule.startDate);
+			ps.setString(6, schedule.endDate);
 			ps.setString(7, schedule.startTime);
 			ps.setString(8, schedule.endTime);
 			ps.setInt(9, schedule.timeslotDuration);

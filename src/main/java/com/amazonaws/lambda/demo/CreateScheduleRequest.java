@@ -1,20 +1,17 @@
 package com.amazonaws.lambda.demo;
 
-import java.sql.Date;
-import java.sql.Time;
-
 public class CreateScheduleRequest {
-	Date initDate;
-	Time initTime;
+	String initDate;
+	String initTime;
 	String orgId;
-	Date startDate;
-	Date endDate;
+	String startDate;
+	String endDate;
 	String startTime;
 	String endTime;
 	int tsDuration;
 	String secretCode;
 
-	public CreateScheduleRequest(Date initDate, Time initTime, Date startDate, Date endDate,
+	public CreateScheduleRequest(String initDate, String initTime, String startDate, String endDate,
 			String startTime, String endTime,int tsDuration) {
 		this.initDate = initDate;
 		this.initTime = initTime;
