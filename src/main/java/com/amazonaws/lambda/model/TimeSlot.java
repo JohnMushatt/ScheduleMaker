@@ -3,23 +3,20 @@ package com.amazonaws.lambda.model;
 import java.sql.Time;
 
 public class TimeSlot {
-	boolean isOpen;
-	Time startTime;
-	Time endTime;
-	boolean isBooked;
-	Meeting meeting;
-	String timeSlotID;
-	int dayOfWeek;
+	public String timeSlotID;
+	public boolean isOpen;
+	public Time startTime;
+	public Time endTime;
+	public boolean isBooked;
+	public int dayOfWeek;
 	
 	
-	public TimeSlot(boolean isOpen, Time startTime, Time endTime, boolean isBooked, Meeting meeting, String timeSlotID,
-			int dayOfWeek) {
+	public TimeSlot(String timeSlotID, boolean isOpen, Time startTime, Time endTime, boolean isBooked, int dayOfWeek) {
+		this.timeSlotID = timeSlotID;
 		this.isOpen = isOpen;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.isBooked = isBooked;
-		this.meeting = meeting;
-		this.timeSlotID = timeSlotID;
 		this.dayOfWeek = dayOfWeek;
 	}
 }
