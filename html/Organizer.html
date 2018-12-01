@@ -1,0 +1,152 @@
+<html>
+<HEAD>
+<script type="text/javascript">
+var create_URL = "https://ki27k4tu62.execute-api.us-east-2.amazonaws.com/Alpha/scheduler"
+
+	function processCreateResponse(result) {
+	  // Can grab any DIV or SPAN HTML element and can then manipulate its
+	  // contents dynamically via javascript
+	  console.log("result:" + result);
+	  var js = JSON.parse(result);
+
+	  var httpResult = js["response"];
+
+	  // Update computation result
+	  document.statusForm.status.value = result;
+	 
+	}
+
+
+function handleCreateClick(e){
+	var d = new Date();
+ 	var createDate = d.toLocaleDateString();
+ 	var createTime = d.toLocaleTimeString();
+	var form = document.createScheduleForm;
+	var startDate = form.startDate.value;
+	var endDate = form.endDate.value;
+	var startTime = form.startTime.value;
+	var endTime = form.endTime.value;
+	var slotDuration = form.slotDuration.value;
+
+	var data = {};
+	data["creationDate"] = createDate;
+	data["creationTime"] = createTime;
+	data["startDate"] = startDate;
+	data["endDate"] = endDate;
+	data["startTime"] = startTime;
+	data["endTime"] = endTime;
+	data["slotDuration"] = slotDuration;
+
+	var js = JSON.stringify(data);
+	console.log("JS" + js);
+
+	var xhr = new XMLHttpRequest();
+	  xhr.open("POST", create_URL, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processCreateResponse(xhr.responseText);
+	    } else {
+	      processCreateResponse("N/A");
+	    }
+	  };
+
+};
+</script>
+<STYLE>
+body {background-color: lightskyblue}
+h1 {background-color: ghostwhite}
+button {margin: 25px}
+th {background: darkgrey;
+bordercolor: white}
+tr, th, td {text-align: center;
+width: 4rem;
+  height: 2rem;
+  border: 1px solid black;}
+  td {background-color: ivory}
+.side {
+   display:inline-block;
+   }
+   .button {
+    color: black;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+.closed {
+	background: grey
+}
+
+</STYLE>
+</HEAD>
+
+<h1>Scheduler</h1>
+<center> <input type = "button" value = "Create Schedule" onClick = "JavaScript:handleCreateClick(this)">
+<input type = "button" value = "Find Week" onClick = "nothing">
+<input type = "button" value = "Extend Date" onClick = "nothing">
+<input type = "button" value = "Delete Schedule" onClick = "nothing"> </center>
+
+<div class="side"> <form name="createScheduleForm" method = "post" name = "createSchedule">
+<p> Schedule Parameters</p>
+Start Date<input name="startDate" value ="ex. yyyy-mm-dd"/>
+End Date<input name="endDate" value ="ex. yyyy-mm-dd"/>
+Start Time<input name="startTime" value ="ex. hh:ss"/>
+<p>End Time<input name="endTime" value ="ex. hh:ss"/>
+Time Slot Duration <input name="slotDuration" value ="ex. 15"/></p>
+<input type = "button" value = "Create Schedule" onClick = "JavaScript:handleCreateClick(this)">
+</form>
+
+<form name = "findForm" method="get" name = "findWeek">
+<p>Find Week</p>
+Date <input name="week" value = ""/>
+</form>
+
+<form name = "modifyForm" method="post" name="modifySchedule">
+<p>Extend Date</p>
+New Start Date <input name="startDate" value=""/>
+New End Date <input name="endDate" value=""/>
+</form>
+
+<form name = "deleteForm"  name="deleteSchedule">
+<p>Delete Schedule</p>
+Secret Code <input name="secretCode" value=""/> 
+</form>
+ </div>
+ 
+ <form name = "statusForm" name="status">
+ <p>Status</p>
+ <input name="status" readonly/>
+ </form>
+ 
+<div class="side"><table>
+ 	<tr>
+ 		<TH />
+ 		<th class="button">Monday</th>
+ 		<th class="button">Tuesday</th>
+ 		<th class="button">Wednesday</th>
+ 		<th class="button">Thursday</th>
+ 		<th class="button">Friday</th>
+ 	</tr>
+ 	<script type="text/javascript">
+ 	for(var k=0; k<6; k++){
+ 	document.write("<tr class='button'>")
+ 	 		document.write("<th>Time</th>");
+ 	 		for (var j=0; j<5; j++){
+ 	 	 		document.write("<td class='button'>test</td>")
+ 	 	 		}
+	 	document.write("</tr>")
+	 	}
+ 	</script>
+ 	
+ 	
+ </table>
+ </div>
+</html>
