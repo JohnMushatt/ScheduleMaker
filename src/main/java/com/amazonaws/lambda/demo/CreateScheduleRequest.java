@@ -24,7 +24,7 @@ public class CreateScheduleRequest {
 
 	@Override
 	public String toString() {
-		return "CreateSchedule(" + initDate + "," + initTime +"," + startDate+ "," + endDate + ",'"
+		return "CreateScheduleRequest(" + initDate + "," + initTime +"," + startDate+ "," + endDate + ",'"
 	+ startTime + "," + endTime+  "," + tsDuration + "," +")";
 	}
 }
