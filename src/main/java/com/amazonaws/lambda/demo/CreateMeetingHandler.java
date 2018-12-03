@@ -23,6 +23,15 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 	LambdaLogger logger;
 	Meeting currentMeeting;
 
+	/**
+	 * Attempt to create meeting in database
+	 * @param	participantID ID of the participant
+	 * @param 	organizerID ID of the organizer
+	 * @param 	timeSlotID ID of the timeslot
+	 * @param 	participantName Name of the participant
+	 * @return 	True if successfully added/updated, False if it did not
+	 * @throws Exception
+	 */
 	private boolean createMeeting(String participantID, String organizerID, String timeSlotID, String participantName)
 			throws Exception {
 
@@ -41,7 +50,9 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		}
 		return false;
 	}
-
+	/**
+	 * Handles HTTP request from web
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 
@@ -55,7 +66,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
-		CreateScheduleResponse response = null;
+		CreateMeetingResponse response = null;
 
 		String body;
 		boolean processed = false;
@@ -73,7 +84,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			logger.log("JSON request parsed!");
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
+			response = new CreateMeetingResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
@@ -85,24 +96,18 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			CreateScheduleResponse resp;
 			try {
 				if (createMeeting(req.scheduleID, req.organizerID, req.timeslotID, req.participantName)) {
-					resp = new CreateScheduleResponse("Secret Code: " + currentMeeting.secretCode, 200);
-
-					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-					logger.log("JSON Response updated");
-
+					String r = "secretCode: " + currentMeeting.secretCode + "\nstimeSlotID: "
+							+ this.currentMeeting.timeSlotID;
+					resp = new CreateScheduleResponse(r, 200);
 				} else {
 					resp = new CreateScheduleResponse(
 							"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
 					logger.log(resp.toString());
-					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-					logger.log("JSON Response updated");
 
 				}
 			} catch (Exception e) {
 				resp = new CreateScheduleResponse(
 						"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
-				// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-				logger.log("JSON Response updated");
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));
