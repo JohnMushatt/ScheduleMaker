@@ -1,65 +1,8 @@
 <html>
 <HEAD>
-<script type="text/javascript">
-var create_URL = "https://ki27k4tu62.execute-api.us-east-2.amazonaws.com/Alpha/scheduler"
+<script type='text/javascript' src='../create.js'></script>
+<script type='text/javascript' src='../api.js'></script>
 
-	function processCreateResponse(result) {
-	  // Can grab any DIV or SPAN HTML element and can then manipulate its
-	  // contents dynamically via javascript
-	  console.log("result:" + result);
-	  var js = JSON.parse(result);
-
-	  var httpResult = js["response"];
-
-	  // Update computation result
-	  document.statusForm.status.value = result;
-	 
-	}
-
-
-function handleCreateClick(e){
-	var d = new Date();
- 	var createDate = d.toLocaleDateString();
- 	var createTime = d.toLocaleTimeString();
-	var form = document.createScheduleForm;
-	var startDate = form.startDate.value;
-	var endDate = form.endDate.value;
-	var startTime = form.startTime.value;
-	var endTime = form.endTime.value;
-	var slotDuration = form.slotDuration.value;
-
-	var data = {};
-	data["creationDate"] = createDate;
-	data["creationTime"] = createTime;
-	data["startDate"] = startDate;
-	data["endDate"] = endDate;
-	data["startTime"] = startTime;
-	data["endTime"] = endTime;
-	data["slotDuration"] = slotDuration;
-
-	var js = JSON.stringify(data);
-	console.log("JS" + js);
-
-	var xhr = new XMLHttpRequest();
-	  xhr.open("POST", create_URL, true);
-
-	  // send the collected data as JSON
-	  xhr.send(js);
-
-	  // This will process results and update HTML as appropriate. 
-	  xhr.onloadend = function () {
-	    console.log(xhr);
-	    console.log(xhr.request);
-	    if (xhr.readyState == XMLHttpRequest.DONE) {
-	      console.log ("XHR:" + xhr.responseText);
-	      processCreateResponse(xhr.responseText);
-	    } else {
-	      processCreateResponse("N/A");
-	    }
-	  };
-
-};
-</script>
 <STYLE>
 body {background-color: lightskyblue}
 h1 {background-color: ghostwhite}
