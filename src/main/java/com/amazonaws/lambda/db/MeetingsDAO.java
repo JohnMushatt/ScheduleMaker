@@ -7,7 +7,7 @@ import com.amazonaws.lambda.model.Meeting;
 
 public class MeetingsDAO {
 	java.sql.Connection conn;
-	
+
 	public MeetingsDAO() {
 		try {
 			conn = DatabaseUtil.connect();
@@ -15,13 +15,13 @@ public class MeetingsDAO {
 			conn = null;
 		}
 	}
-	
-	public Meeting getMeeting(String meetingId) throws Exception {
+
+	public Meeting getMeeting(Meeting meeting) throws Exception {
 		try {
-			Meeting meeting = null;
+			Meeting m = null;
 
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE mId=?;");
-			ps.setString(1, meetingId);
+			ps.setString(1, meeting.meetingID);
 
 			ResultSet resultSet  = ps.executeQuery();
 
@@ -30,7 +30,7 @@ public class MeetingsDAO {
 			}
 			resultSet.close();
 			ps.close();
-			return meeting;
+			return m;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -38,7 +38,7 @@ public class MeetingsDAO {
 		}
 
 	}
-	
+
 	//don't call deleteMeeting method yet
 	public boolean deleteMeeting(Meeting meeting) throws Exception {
 		try {
@@ -54,16 +54,17 @@ public class MeetingsDAO {
 
 		}
 	}
-	
+
 	private Meeting generateMeeting(ResultSet resultSet) throws Exception {
 		String meetingID = resultSet.getString("mId");
 		String participantID = resultSet.getString("participantID");
 		String organizerID = resultSet.getString("organizerID");
 		String timeSlotID = resultSet.getString("timeSlotID");
 		String participantName = resultSet.getString("participantName");
-		return new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName);
+		String secretCode = resultSet.getString("sId");
+		return new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName,secretCode);
 	}
-	
+
 	public boolean addMeeting(Meeting meeting) throws Exception{
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE mId=?;");
@@ -75,13 +76,13 @@ public class MeetingsDAO {
 				resultSet.close();
 				return false;
 			}
-			ps = conn.prepareStatement("INSERT INTO Meetings (mId, parId, orgId, tsId, parName) values(?,?,?,?,?);");
+			ps = conn.prepareStatement("INSERT INTO Meetings (mId, parId, orgId, tsId, parName,sCode) values(?,?,?,?,?,?);");
 			ps.setString(1, meeting.meetingID);
 			ps.setString(2, meeting.participantID);
 			ps.setString(3,meeting.organizerID);
 			ps.setString(4, meeting.timeSlotID);
 			ps.setString(5, meeting.participantName);
-		
+			ps.setString(6, meeting.secretCode);
 			ps.execute();
 			System.out.println("Succesfully added meeting: " + meeting.meetingID);;
 			return true;
