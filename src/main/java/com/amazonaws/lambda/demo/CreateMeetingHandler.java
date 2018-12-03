@@ -12,53 +12,36 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.amazonaws.lambda.db.SchedulesDAO;
-import com.amazonaws.lambda.model.Schedule;
+import com.amazonaws.lambda.db.MeetingsDAO;
+import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-public class CreateScheduleHandler implements RequestStreamHandler {
+public class CreateMeetingHandler implements RequestStreamHandler {
+	LambdaLogger logger;
+	Meeting currentMeeting;
 
-	public LambdaLogger logger = null;
-	private Schedule currentSchedule;
+	private boolean createMeeting(String participantID, String organizerID, String timeSlotID, String participantName)
+			throws Exception {
 
-	/**Creates schedule to place in db
-	 *
-	 * @param initDate 		Creation date of schedule
-	 * @param initTime		Create time of schedule
-	 * @param startDate		Start date of schedule
-	 * @param endDate		End date of schedule
-	 * @param startTime		Start time of schedule day
-	 * @param endTime		End time of schedule day
-	 * @param tsDuration	Timeslot duraiton
-	 * @return				True if added/updated false if not
-	 * @throws Exception
-	 */
-	boolean createSchedule(String initDate, String initTime, String startDate, String endDate, String startTime,
-			String endTime, int tsDuration) throws Exception {
 		if (logger != null) {
-			logger.log("in createSchedule");
+			logger.log("in createMeeting");
 		}
-		SchedulesDAO dao = new SchedulesDAO();
 		Random r = new Random();
-		String organizerId = "" + (int) (r.nextDouble() * 10000);
-		String sId = initDate + organizerId + initTime;
-		String secretCode = sId + organizerId;
-		Schedule exist = dao.getSchedule(sId);
-		Schedule schedule = new Schedule(sId, initDate, initTime, organizerId, startDate, endDate, startTime, endTime,
-				tsDuration, secretCode);
-		currentSchedule = schedule;
+		String meetingID = "" + r.nextDouble() * 10000;
+		String secretCode = participantID + meetingID + organizerID;
+		Meeting meeting = new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName, secretCode);
+		MeetingsDAO dao = new MeetingsDAO();
+		Meeting exist = dao.getMeeting(meeting);
+		currentMeeting = meeting;
 		if (exist == null) {
-			return dao.addSchedule(schedule);
-		} else {
-			return dao.updateSchedule(schedule);
+			return dao.addMeeting(meeting);
 		}
+		return false;
 	}
-	/**
-	 * Handles http request to add/update schedule
-	 */
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 
@@ -96,27 +79,28 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			body = null;
 		}
 		if (!processed) {
-			CreateScheduleRequest req = new Gson().fromJson(body, CreateScheduleRequest.class);
+			CreateMeetingRequest req = new Gson().fromJson(body, CreateMeetingRequest.class);
 			logger.log(req.toString());
 
 			CreateScheduleResponse resp;
 			try {
-				if (createSchedule(req.initDate, req.initTime, req.startDate, req.endDate, req.startTime, req.endTime,
-						req.tsDuration)) {
-					resp = new CreateScheduleResponse("Secret Code: " + currentSchedule.secretCode, 200);
+				if (createMeeting(req.scheduleID, req.organizerID, req.timeslotID, req.participantName)) {
+					resp = new CreateScheduleResponse("Secret Code: " + currentMeeting.secretCode, 200);
 
 					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 					logger.log("JSON Response updated");
 
 				} else {
-					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
+					resp = new CreateScheduleResponse(
+							"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
 					logger.log(resp.toString());
 					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 					logger.log("JSON Response updated");
 
 				}
 			} catch (Exception e) {
-				resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
+				resp = new CreateScheduleResponse(
+						"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
 				// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 				logger.log("JSON Response updated");
 
@@ -136,4 +120,5 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 		System.out.println("THIS IS THE JSON RESPONSE\n\n" + responseJson.toString());
 	}
+
 }
