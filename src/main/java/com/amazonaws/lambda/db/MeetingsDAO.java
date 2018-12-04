@@ -16,12 +16,12 @@ public class MeetingsDAO {
 		}
 	}
 
-	public Meeting getMeeting(Meeting meeting) throws Exception {
+	public Meeting getMeeting(String meetingId) throws Exception {
 		try {
-			Meeting m = null;
+			Meeting meeting = null;
 
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE mId=?;");
-			ps.setString(1, meeting.meetingID);
+			ps.setString(1, meetingId);
 
 			ResultSet resultSet  = ps.executeQuery();
 
@@ -30,7 +30,7 @@ public class MeetingsDAO {
 			}
 			resultSet.close();
 			ps.close();
-			return m;
+			return meeting;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -40,10 +40,10 @@ public class MeetingsDAO {
 	}
 
 	//don't call deleteMeeting method yet
-	public boolean deleteMeeting(Meeting meeting) throws Exception {
+	public boolean deleteMeeting(String meetingID) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE mId = ?;");
-			ps.setString(1, meeting.meetingID);
+			ps.setString(1, meetingID);
 
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -61,7 +61,7 @@ public class MeetingsDAO {
 		String organizerID = resultSet.getString("organizerID");
 		String timeSlotID = resultSet.getString("timeSlotID");
 		String participantName = resultSet.getString("participantName");
-		String secretCode = resultSet.getString("sId");
+		String secretCode = resultSet.getString("sID");
 		return new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName,secretCode);
 	}
 

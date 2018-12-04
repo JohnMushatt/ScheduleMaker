@@ -6,6 +6,14 @@ public class CreateMeetingRequest {
 	String timeslotID;
 	String participantID;
 	String participantName;
+	/**
+	 * Create the HTTP meeting request to store data
+	 * @param sID 	Schedule ID
+	 * @param orgID OrganizerID
+	 * @param tID 	Time slot ID
+	 * @param pID	Participant ID
+	 * @param pName	Name of the participant
+	 */
 	public CreateMeetingRequest(String sID, String orgID,String tID,String pID,String pName) {
 		this.scheduleID=sID;
 		this.organizerID=orgID;
