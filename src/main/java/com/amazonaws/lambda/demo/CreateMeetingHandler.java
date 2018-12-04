@@ -32,16 +32,16 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 	 * @return 	True if successfully added/updated, False if it did not
 	 * @throws Exception
 	 */
-	private boolean createMeeting(String participantID, String organizerID, String timeSlotID, String participantName)
+	private boolean createMeeting(String scheduleID, String organizerID, String timeSlotID, String participantName)
 			throws Exception {
 
 		if (logger != null) {
 			logger.log("in createMeeting");
 		}
 		Random r = new Random();
-		String meetingID = "" + r.nextDouble() * 10000;
-		String secretCode = participantID + meetingID + organizerID;
-		Meeting meeting = new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName, secretCode);
+		String meetingID = "" + (int)(r.nextDouble() * 10000);
+		String secretCode = scheduleID + meetingID + organizerID;
+		Meeting meeting = new Meeting(meetingID, scheduleID, organizerID, timeSlotID, participantName, secretCode);
 		MeetingsDAO dao = new MeetingsDAO();
 		Meeting exist = dao.getMeeting(meetingID);
 		currentMeeting = meeting;
@@ -101,13 +101,13 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 					resp = new CreateScheduleResponse(r, 200);
 				} else {
 					resp = new CreateScheduleResponse(
-							"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
+							"Unable to create meeting between " + req.participantName + "and " + req.organizerID, 403);
 					logger.log(resp.toString());
 
 				}
 			} catch (Exception e) {
 				resp = new CreateScheduleResponse(
-						"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
+						"Unable to create meeting between " + req.participantName+ "and " + req.organizerID, 403);
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));

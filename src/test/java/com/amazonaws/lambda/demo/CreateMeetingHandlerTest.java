@@ -27,11 +27,11 @@ public class CreateMeetingHandlerTest {
 	}
 
 	@Test
-	public void testCreateMeetingHander() throws IOException {
+	public void TestCreateMeetingHander() throws IOException {
 		CreateMeetingHandler handler = new CreateMeetingHandler();
 
 		CreateMeetingRequest cmr = new CreateMeetingRequest("testMeetingID", "testOrganizerID", "testTimeSlotID",
-				"testParticipantID", "jordanSuckz");
+				 "jordanSuckz");
 
 		String meetingRequest = new Gson().toJson(cmr);
 		String jsonRequest = new Gson().toJson(new PostRequest(meetingRequest));
