@@ -57,7 +57,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 
 		logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create schedule");
+		logger.log("Loading Java Lambda handler to create meeting");
 
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json");
