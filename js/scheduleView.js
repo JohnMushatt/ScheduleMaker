@@ -21,12 +21,12 @@ function displayOrgSchedule(){
 //var js = JSON.parse(result);
 
 var output ="<table><tr><TH />";
-var dates = "11-14";
+var dates = "04-28";
 var startTime = 1000;
-var tsd = 15;
+var tsd = 20;
 var hours = (1600-startTime)/100;
 var id = 143532;
-
+var looper = (1+(hours*60)/tsd);
  		output = output + "<th class='button'>Monday " + dates + "</th>";
 var dates = nextDay(dates);
 	output = output + "<th class='button'>Tuesday " + dates+ "</th>";
@@ -37,24 +37,19 @@ var dates = nextDay(dates);
 var dates = nextDay(dates);
  	output = output + "<th class='button'>Friday " + dates + "</th></tr>";
 
- 	for(var i =0; i<hours; i++){
- 		output = output + "<tr> <th class='button'>" + startTime + "</th>";
+ 	for(var i =0; i<looper; i++){
+ 		output = output + "<tr> <th class='button'>" + startTime.toString().substr(0,2)+":"+startTime.toString().substr(2,3)+ "</th>";
  		for(var k=0; k<5; k++){
  			output = output + "<td class='button' id="+id+">open</td>";
  		}
  		output = output + "</tr>"
+ 		if(startTime.toString().substr(2,3) == (60-tsd)){
+ 			startTime=startTime+40+tsd;
+ 		}else{
  		startTime=startTime+tsd;
+ 		}
  	}
- 	/**<script type="text/javascript">
- 	for(var k=0; k<6; k++){
- 	document.write("<tr class='button'>")
- 	 		document.write("<th>Time</th>");
- 	 		for (var j=0; j<5; j++){
- 	 	 		document.write("<td class='button'>test</td>")
- 	 	 		}
-	 	document.write("</tr>")
-	 	}
- 	</script> **/
+ 	
  	
  	
 output = output + "</table>";
@@ -62,7 +57,7 @@ output = output + "</table>";
 }
 
 function nextDay(date){
-    //var date = "02-27"
+    //var date = "04-28"
     var month = parseInt(date);
     var newMonth = 0;
     var newDate = 0;
@@ -73,6 +68,9 @@ function nextDay(date){
 			newMonth = month + 1;
 			newDate = newMonth+"-01";
 		} else {
+			if(month<10){
+				month = "0"+month;
+			}
 			if(day>=10){ 
 				newDate = month+"-"+(parseInt(day)+1);
 			} else { 
@@ -82,20 +80,29 @@ function nextDay(date){
 	}
 	else if(month == 2) {
 		if(day == 28){ 
-			newDate = (month+1)+"-01"; 
+			newDate = "0"+(month+1)+"-01"; 
 		} else { 
+			if(month<10){
+				month = "0"+month;
+			}
 			if(day>=10){ 
-				newDate = month+"-"+(parseInt(day)+1);
+				newDate = "0"+month+"-"+(parseInt(day)+1);
 			} else { 
-				newDate = month+"-0"+(parseInt(day)+1);
+				newDate = "0"+month+"-0"+(parseInt(day)+1);
 			}
 		}
 	}
 	else {
 		if( day == 30){
 			newMonth = month + 1;
+			if(newMonth < 10){
+				newMonth = "0"+newMonth;
+			}
 			return newMonth+"-01";
 		} else{
+			if(month<10){
+				month = "0"+month;
+			}
                 if(day>=10)
 				{
                     newDate = month+"-"+(parseInt(day)+1);
