@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Random;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,46 +17,14 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
-
-public class CreateMeetingHandler implements RequestStreamHandler {
+public class DeleteMeetingHandler implements RequestStreamHandler {
 	LambdaLogger logger;
 	Meeting currentMeeting;
+    @Override
+    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 
-	/**
-	 * Attempt to create meeting in database
-	 * @param	participantID ID of the participant
-	 * @param 	organizerID ID of the organizer
-	 * @param 	timeSlotID ID of the timeslot
-	 * @param 	participantName Name of the participant
-	 * @return 	True if successfully added/updated, False if it did not
-	 * @throws Exception
-	 */
-	private boolean createMeeting(String participantID, String organizerID, String timeSlotID, String participantName)
-			throws Exception {
-
-		if (logger != null) {
-			logger.log("in createMeeting");
-		}
-		Random r = new Random();
-		String meetingID = "" + r.nextDouble() * 10000;
-		String secretCode = participantID + meetingID + organizerID;
-		Meeting meeting = new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName, secretCode);
-		MeetingsDAO dao = new MeetingsDAO();
-		Meeting exist = dao.getMeeting(meetingID);
-		currentMeeting = meeting;
-		if (exist == null) {
-			return dao.addMeeting(meeting);
-		}
-		return false;
-	}
-	/**
-	 * Handles HTTP request from web
-	 */
-	@Override
-	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
-
-		logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create meeting");
+    	logger = context.getLogger();
+		logger.log("Loading Java Lambda handler to create schedule");
 
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json");
@@ -66,7 +33,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
-		CreateMeetingResponse response = null;
+		DeleteMeetingResponse response = null;
 
 		String body;
 		boolean processed = false;
@@ -84,30 +51,34 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			logger.log("JSON request parsed!");
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CreateMeetingResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
+			response = new DeleteMeetingResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
 		}
 		if (!processed) {
-			CreateMeetingRequest req = new Gson().fromJson(body, CreateMeetingRequest.class);
+			DeleteMeetingRequest req = new Gson().fromJson(body, DeleteMeetingRequest.class);
 			logger.log(req.toString());
-
-			CreateScheduleResponse resp;
+			MeetingsDAO dao = new MeetingsDAO();
+			DeleteMeetingResponse resp;
 			try {
-				if (createMeeting(req.scheduleID, req.organizerID, req.timeslotID, req.participantName)) {
-					String r = "secretCode: " + currentMeeting.secretCode + "\nstimeSlotID: "
-							+ this.currentMeeting.timeSlotID;
-					resp = new CreateScheduleResponse(r, 200);
+				if (dao.deleteMeeting(req.meetingID)) {
+					resp = new DeleteMeetingResponse("meetingID: " + currentMeeting.meetingID, 200);
+
+					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
+					logger.log("JSON Response updated");
+
 				} else {
-					resp = new CreateScheduleResponse(
-							"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
+					resp = new DeleteMeetingResponse("Unable to delete meeting: " + req.meetingID, 403);
 					logger.log(resp.toString());
+					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
+					logger.log("JSON Response updated");
 
 				}
 			} catch (Exception e) {
-				resp = new CreateScheduleResponse(
-						"Unable to create meeting between " + req.participantID + "and " + req.organizerID, 403);
+				resp = new DeleteMeetingResponse("Unable to delete meeting: " + req.meetingID, 403);
+				// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
+				logger.log("JSON Response updated");
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));
@@ -124,6 +95,6 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		writer.close();
 
 		System.out.println("THIS IS THE JSON RESPONSE\n\n" + responseJson.toString());
-	}
+    }
 
 }
