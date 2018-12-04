@@ -39,7 +39,6 @@ public class MeetingsDAO {
 
 	}
 
-	//don't call deleteMeeting method yet
 	public boolean deleteMeeting(String meetingID) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE mId = ?;");
