@@ -12,7 +12,7 @@ import org.junit.Test;
 /**
  * A simple test harness for locally invoking your Lambda function handler.
  */
-public class CreateMeetingHanderTest {
+public class CreateMeetingHandlerTest {
 
     private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
     private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
