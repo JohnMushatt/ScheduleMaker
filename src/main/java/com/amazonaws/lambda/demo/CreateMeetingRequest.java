@@ -4,7 +4,6 @@ public class CreateMeetingRequest {
 	String scheduleID;
 	String organizerID;
 	String timeslotID;
-	String participantID;
 	String participantName;
 	/**
 	 * Create the HTTP meeting request to store data
@@ -14,16 +13,15 @@ public class CreateMeetingRequest {
 	 * @param pID	Participant ID
 	 * @param pName	Name of the participant
 	 */
-	public CreateMeetingRequest(String sID, String orgID,String tID,String pID,String pName) {
-		this.scheduleID=sID;
-		this.organizerID=orgID;
-		this.timeslotID=tID;
-		this.participantID=pID;
-		this.participantName=pName;
+	public CreateMeetingRequest(String scheduleID, String organizerID,String timeslotID,String participantName) {
+		this.scheduleID=scheduleID;
+		this.organizerID=organizerID;
+		this.timeslotID=timeslotID;
+		this.participantName=participantName;
 	}
 
 	@Override
 	public String toString() {
-		return "CreateMeetingRequest("+this.scheduleID+","+this.organizerID+","+this.timeslotID+","+this.participantID+","+this.participantName+")";
+		return "CreateMeetingRequest("+this.scheduleID+","+this.organizerID+","+this.timeslotID+","+this.participantName+")";
 	}
 }
