@@ -37,10 +37,10 @@ public class SchedulesDAO {
 		}
 
 	}
-	public boolean deleteSchedule(Schedule schedule) throws Exception {
+	public boolean deleteSchedule(String scheduleId) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE sId = ?;");
-			ps.setString(1, schedule.scheduleId);
+			ps.setString(1, scheduleId);
 
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -107,13 +107,13 @@ public class SchedulesDAO {
 					+ "tsDuration,secretCode) values(?,?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.scheduleId);
 			ps.setString(2, schedule.initialDate);
-			ps.setString(3,schedule.initialTime);
+			ps.setString(3,	schedule.initialTime);
 			ps.setString(4, schedule.organizerId);
 			ps.setString(5, schedule.startDate);
 			ps.setString(6, schedule.endDate);
 			ps.setString(7, schedule.startTime);
 			ps.setString(8, schedule.endTime);
-			ps.setInt(9, schedule.timeslotDuration);
+			ps.setInt(9, 	schedule.timeslotDuration);
 			ps.setString(10,schedule.secretCode);
 			ps.execute();
 			System.out.println("Succesfully added schedule: " + schedule.scheduleId);;
