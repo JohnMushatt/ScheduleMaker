@@ -2,74 +2,105 @@
 <HEAD>
 <script type='text/javascript' src='../create.js'></script>
 <script type='text/javascript' src='../api.js'></script>
+<script type='text/javascript' src='../scheduleView.js'></script>
 
 <STYLE>
-body {background-color: lightskyblue}
-h1 {background-color: ghostwhite}
-button {margin: 25px}
-th {background: darkgrey;
-bordercolor: white}
-tr, th, td {text-align: center;
-width: 4rem;
-  height: 2rem;
-  border: 1px solid black;}
-  td {background-color: ivory}
+body {
+	background-color: lightskyblue
+}
+
+h1 {
+	background-color: ghostwhite
+}
+
+button {
+	margin: 25px
+}
+
+th {
+	background: darkgrey;
+	bordercolor: white
+}
+
+tr, th, td {
+	text-align: center;
+	width: 4rem;
+	height: 2rem;
+	border: 1px solid black;
+}
+
+td {
+	background-color: ivory
+}
+
 .side {
-   display:inline-block;
-   }
-   .button {
-    color: black;
-    text-align: center;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    }
+	display: inline-block;
+}
+
+.button {
+	color: black;
+	text-align: center;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+}
+
 .closed {
 	background: grey
 }
-
 </STYLE>
 </HEAD>
 
 <h1>Scheduler</h1>
-<center> <input type = "button" value = "Create Schedule" onClick = "JavaScript:handleCreateClick(this)">
-<input type = "button" value = "Find Week" onClick = "nothing">
-<input type = "button" value = "Extend Date" onClick = "nothing">
-<input type = "button" value = "Delete Schedule" onClick = "nothing"> </center>
+<center>
+	<input type="button" value="Create Schedule"
+		onClick="JavaScript:handleCreateClick(this)"> <input
+		type="button" value="Find Week" onClick="nothing"> <input
+		type="button" value="Extend Date" onClick="nothing"> <input
+		type="button" value="Delete Schedule" onClick="nothing">
+</center>
 
-<div class="side"> <form name="createScheduleForm" method = "post" name = "createSchedule">
-<p> Schedule Parameters</p>
-Start Date<input name="startDate" value ="ex. yyyy-mm-dd"/>
-End Date<input name="endDate" value ="ex. yyyy-mm-dd"/>
-Start Time<input name="startTime" value ="ex. hh:ss"/>
-<p>End Time<input name="endTime" value ="ex. hh:ss"/>
-Time Slot Duration <input name="slotDuration" value ="ex. 15"/></p>
-<input type = "button" value = "Create Schedule" onClick = "JavaScript:handleCreateClick(this)">
+<div class="side">
+	<form name="createScheduleForm" method="post" name="createSchedule">
+		<p>Schedule Parameters</p>
+		Start Date<input name="startDate" value="ex. yyyy-mm-dd" /> End Date<input
+			name="endDate" value="ex. yyyy-mm-dd" /> Start Time<input
+			name="startTime" value="ex. hh:ss" />
+		<p>
+			End Time<input name="endTime" value="ex. hh:ss" /> Time Slot
+			Duration <input name="slotDuration" value="ex. 15" />
+		</p>
+		<input type="button" value="Create Schedule"
+			onClick="JavaScript:handleCreateClick(this)">
+	</form>
+
+	<form name="findForm" method="get" name="findWeek">
+		<p>Find Week</p>
+		Date <input name="week" value="" />
+	</form>
+
+	<form name="modifyForm" method="post" name="modifySchedule">
+		<p>Extend Date</p>
+		New Start Date <input name="startDate" value="" /> New End Date <input
+			name="endDate" value="" />
+	</form>
+
+	<form name="deleteForm" name="deleteSchedule">
+		<p>Delete Schedule</p>
+		Secret Code <input name="secretCode" value="" />
+	</form>
+
+
+<form name="statusForm" name="status">
+	<p>Status</p>
+	<input name="status" readonly />
 </form>
 
-<form name = "findForm" method="get" name = "findWeek">
-<p>Find Week</p>
-Date <input name="week" value = ""/>
-</form>
+<button onclick="Javascript:displayOrgSchedule()">GO</button>
+</div>
+<div class="side" id="table">
 
-<form name = "modifyForm" method="post" name="modifySchedule">
-<p>Extend Date</p>
-New Start Date <input name="startDate" value=""/>
-New End Date <input name="endDate" value=""/>
-</form>
-
-<form name = "deleteForm"  name="deleteSchedule">
-<p>Delete Schedule</p>
-Secret Code <input name="secretCode" value=""/> 
-</form>
- </div>
- 
- <form name = "statusForm" name="status">
- <p>Status</p>
- <input name="status" readonly/>
- </form>
- 
-<div class="side"><table>
+	<!-- <table>
  	<tr>
  		<TH />
  		<th class="button">Monday</th>
@@ -87,9 +118,9 @@ Secret Code <input name="secretCode" value=""/>
  	 	 		}
 	 	document.write("</tr>")
 	 	}
- 	</script>
- 	
- 	
- </table>
- </div>
+ 	</script> -->
+
+
+	</table>
+</div>
 </html>

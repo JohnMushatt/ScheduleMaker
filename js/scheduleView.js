@@ -16,22 +16,36 @@ function refreshScheduleView(){
 	  };
 	}
 
-function displayOrgSchedule(result){
-var js = JSON.parse(result);
+function displayOrgSchedule(){
+	var tableData = document.getElementById('table');
+//var js = JSON.parse(result);
 
-var output ="<table><tr><TH />"
-var dates = "11-14"
- 		output = output + "<th class='button'>Monday" + dates + "</th>"
-var dates = nextDay(dates);
-	output = output + "<th class='button'>Tuesday " + dates+ "</th>"
-var dates = nextDay(dates);
- 	output = output + "<th class='button'>Wednesday " + dates+ "</th>"
-var dates = nextDay(dates);
- 	output = output + "<th class="button">Thursday " + dates "</th>"
-var dates = nextDay(dates);
- 	output = output + "<th class="button">Friday " + dates "</th></tr>"
+var output ="<table><tr><TH />";
+var dates = "11-14";
+var startTime = 1000;
+var tsd = 15;
+var hours = (1600-startTime)/100;
+var id = 143532;
 
- 	<script type="text/javascript">
+ 		output = output + "<th class='button'>Monday " + dates + "</th>";
+var dates = nextDay(dates);
+	output = output + "<th class='button'>Tuesday " + dates+ "</th>";
+var dates = nextDay(dates);
+ 	output = output + "<th class='button'>Wednesday " + dates+ "</th>";
+var dates = nextDay(dates);
+ 	output = output + "<th class='button'>Thursday " + dates + "</th>";
+var dates = nextDay(dates);
+ 	output = output + "<th class='button'>Friday " + dates + "</th></tr>";
+
+ 	for(var i =0; i<hours; i++){
+ 		output = output + "<tr> <th class='button'>" + startTime + "</th>";
+ 		for(var k=0; k<5; k++){
+ 			output = output + "<td class='button' id="+id+">open</td>";
+ 		}
+ 		output = output + "</tr>"
+ 		startTime=startTime+tsd;
+ 	}
+ 	/**<script type="text/javascript">
  	for(var k=0; k<6; k++){
  	document.write("<tr class='button'>")
  	 		document.write("<th>Time</th>");
@@ -40,40 +54,57 @@ var dates = nextDay(dates);
  	 	 		}
 	 	document.write("</tr>")
 	 	}
- 	</script>
+ 	</script> **/
  	
  	
- </table>
+output = output + "</table>";
+ 	tableData.innerHTML = output;
 }
 
 function nextDay(date){
-	var month = parseInt(date);
-	var date = date.substr(3, 4);
+    //var date = "02-27"
+    var month = parseInt(date);
+    var newMonth = 0;
+    var newDate = 0;
+	var day = date.substr(3, 4);
 	if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
 		{
-		if(day == 31)
-			{
-			var newMonth = month + 1;
-			return newMonth+"-01"
-			}
-		else
-			{
-		return month+"-"(day+1)
-			}
-		}
-	if(month == 2 && day == 28)
-		{
-		return (month+1)+"-01"
+		if(day == 31){
+			newMonth = month + 1;
+			newDate = newMonth+"-01";
 		} else {
-		return month+"-"+(day+1);
-		} 
-	else{
-		if( day == 30){
-			var newMonth = month + 1;
-			return newMonth+"-01"
-		} else{
-			return month+"-"(day+1)
+			if(day>=10){ 
+				newDate = month+"-"+(parseInt(day)+1);
+			} else { 
+				newDate = month+"-0"+(parseInt(day)+1);
+				}
 		}
-			
 	}
+	else if(month == 2) {
+		if(day == 28){ 
+			newDate = (month+1)+"-01"; 
+		} else { 
+			if(day>=10){ 
+				newDate = month+"-"+(parseInt(day)+1);
+			} else { 
+				newDate = month+"-0"+(parseInt(day)+1);
+			}
+		}
+	}
+	else {
+		if( day == 30){
+			newMonth = month + 1;
+			return newMonth+"-01";
+		} else{
+                if(day>=10)
+				{
+                    newDate = month+"-"+(parseInt(day)+1);
+				}else{
+					newDate = month+"-0"+(parseInt(day)+1);
+				}
+			}		
+	}
+	console.log(newDate);
+	//alert(newDate);
+	return newDate;
 }

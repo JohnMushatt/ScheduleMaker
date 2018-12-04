@@ -3,7 +3,7 @@ function processCreateResponse(result) {
 	  // contents dynamically via javascript
 	  console.log("result:" + result);
 	  var js = JSON.parse(result);
-	  var code = js.list[0];
+	  var code = js.secretcode;
 	  console.log(code);
 
 	  var httpResult = js["response"];
