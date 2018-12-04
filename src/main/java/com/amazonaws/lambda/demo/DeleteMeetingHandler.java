@@ -20,11 +20,27 @@ import com.google.gson.Gson;
 public class DeleteMeetingHandler implements RequestStreamHandler {
 	LambdaLogger logger;
 	Meeting currentMeeting;
+	public boolean deleteMeeting(String meetingID) throws Exception{
+		if(logger!=null) {
+			logger.log("in deleteMeeting");
+		}
+		MeetingsDAO dao = new MeetingsDAO();
+		Meeting exist = dao.getMeeting(meetingID);
+		if(exist==null) {
+			return false;
+		}
+		else {
+			return dao.deleteMeeting(meetingID);
+		}
+	}
+	/**
+	 * Handle HTTP request from web
+	 */
     @Override
     public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 
     	logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create schedule");
+		logger.log("Loading Java Lambda handler to delete meeting");
 
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json");
@@ -63,7 +79,7 @@ public class DeleteMeetingHandler implements RequestStreamHandler {
 			DeleteMeetingResponse resp;
 			try {
 				if (dao.deleteMeeting(req.meetingID)) {
-					resp = new DeleteMeetingResponse("meetingID: " + currentMeeting.meetingID, 200);
+					resp = new DeleteMeetingResponse("meetingID: " +req.meetingID, 200);
 
 					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 					logger.log("JSON Response updated");
