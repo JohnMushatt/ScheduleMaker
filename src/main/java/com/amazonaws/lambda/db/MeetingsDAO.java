@@ -57,12 +57,12 @@ public class MeetingsDAO {
 
 	private Meeting generateMeeting(ResultSet resultSet) throws Exception {
 		String meetingID = resultSet.getString("mId");
-		String participantID = resultSet.getString("participantID");
-		String organizerID = resultSet.getString("organizerID");
-		String timeSlotID = resultSet.getString("timeSlotID");
-		String participantName = resultSet.getString("participantName");
-		String secretCode = resultSet.getString("sID");
-		return new Meeting(meetingID, participantID, organizerID, timeSlotID, participantName,secretCode);
+		String organizerID = resultSet.getString("orgId");
+		String timeSlotID = resultSet.getString("tsId");
+		String participantName = resultSet.getString("parName");
+		String scheduleID = resultSet.getString("sId");
+		String secretCode = resultSet.getString("secretCode");
+		return new Meeting(meetingID,organizerID, timeSlotID, participantName,scheduleID,secretCode);
 	}
 
 	public boolean addMeeting(Meeting meeting) throws Exception{
@@ -76,12 +76,12 @@ public class MeetingsDAO {
 				resultSet.close();
 				return false;
 			}
-			ps = conn.prepareStatement("INSERT INTO Meetings (mId, parId, orgId, tsId, parName,sCode) values(?,?,?,?,?,?);");
+			ps = conn.prepareStatement("INSERT INTO Meetings (mId, orgId, tsId, parName,sId,secretCode) values(?,?,?,?,?,?);");
 			ps.setString(1, meeting.meetingID);
-			ps.setString(2, meeting.participantID);
-			ps.setString(3,meeting.organizerID);
-			ps.setString(4, meeting.timeSlotID);
-			ps.setString(5, meeting.participantName);
+			ps.setString(2, meeting.organizerID);
+			ps.setString(3, meeting.timeSlotID);
+			ps.setString(4, meeting.participantName);
+			ps.setString(5, meeting.scheduleID);
 			ps.setString(6, meeting.secretCode);
 			ps.execute();
 			System.out.println("Succesfully added meeting: " + meeting.meetingID);;
