@@ -46,7 +46,4 @@ public class DeleteMeetingHandlerTest {
 		OutputStream deleteOutput = new ByteArrayOutputStream();
 
 		deleteHandler.handleRequest(deleteInput, deleteOutput, createContext("deleteMeeting"));
-
-
-	}
 }
