@@ -17,25 +17,27 @@ import com.google.gson.Gson;
  */
 public class CreateMeetingHandlerTest {
 
-    private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
-    private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
-    Context createContext(String apiCall) {
-        TestContext ctx = new TestContext();
-        ctx.setFunctionName(apiCall);
-        return ctx;
-    }
-    @Test
-    public void testCreateMeetingHander() throws IOException {
-        CreateMeetingHandler handler = new CreateMeetingHandler();
+	private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
+	private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
 
-        CreateMeetingRequest cmr = new CreateMeetingRequest("testMeetingID", "testOrganizerID",
-        		"testTimeSlotID","testParticipantID","jordanSuckz");
+	Context createContext(String apiCall) {
+		TestContext ctx = new TestContext();
+		ctx.setFunctionName(apiCall);
+		return ctx;
+	}
 
-        String meetingRequest = new Gson().toJson(cmr);
-        String jsonRequest = new Gson().toJson(new PostRequest(meetingRequest));
-        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
-        OutputStream output = new ByteArrayOutputStream();
+	@Test
+	public void testCreateMeetingHander() throws IOException {
+		CreateMeetingHandler handler = new CreateMeetingHandler();
 
-        handler.handleRequest(input, output, createContext("createMeeting"));
-    }
+		CreateMeetingRequest cmr = new CreateMeetingRequest("testMeetingID", "testOrganizerID", "testTimeSlotID",
+				"testParticipantID", "jordanSuckz");
+
+		String meetingRequest = new Gson().toJson(cmr);
+		String jsonRequest = new Gson().toJson(new PostRequest(meetingRequest));
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+		OutputStream output = new ByteArrayOutputStream();
+
+		handler.handleRequest(input, output, createContext("createMeeting"));
+	}
 }
