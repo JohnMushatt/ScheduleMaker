@@ -30,7 +30,7 @@ public class CreateMeetingHandlerTest {
 	public void TestCreateMeetingHander() throws IOException {
 		CreateMeetingHandler handler = new CreateMeetingHandler();
 
-		CreateMeetingRequest cmr = new CreateMeetingRequest("testMeetingID", "testOrganizerID", "testTimeSlotID",
+		CreateMeetingRequest cmr = new CreateMeetingRequest("testScheduleID", "testOrganizerID", "testTimeSlotID",
 				 "jordanSuckz");
 
 		String meetingRequest = new Gson().toJson(cmr);

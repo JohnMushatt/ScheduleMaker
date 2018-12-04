@@ -14,9 +14,9 @@ public class DeleteMeetingHandlerTest {
 
     @Test
     public void testDeleteMeetingHandler() throws IOException {
-    //    DeleteMeetingHandler handler = new DeleteMeetingHandler();
-      //  CreateMeetingReqeust cmr = new CreateMeetingRequest(String sID, String orgID,
-        //		String tID,String pID,String pName)
-       //DeleteMeetingRequest dmr = new DeleteMeetingRequest("deleteTestID");
+       DeleteMeetingHandler handler = new DeleteMeetingHandler();
+       DeleteMeetingReqeust cmr = new DeleteMeetingRequest(String sID, String orgID,
+       		String tID,String pID,String pName)
+       DeleteMeetingRequest dmr = new DeleteMeetingRequest("deleteTestID");
     }
 }
