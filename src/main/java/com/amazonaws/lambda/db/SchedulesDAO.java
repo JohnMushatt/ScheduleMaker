@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.amazonaws.lambda.model.Schedule;
+
 public class SchedulesDAO {
 	java.sql.Connection conn;
 
@@ -22,10 +23,10 @@ public class SchedulesDAO {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE sId=?;");
 			ps.setString(1, scheduleId);
 
-			ResultSet resultSet  = ps.executeQuery();
+			ResultSet resultSet = ps.executeQuery();
 
-			while(resultSet.next()) {
-				schedule=generateSchedule(resultSet);
+			while (resultSet.next()) {
+				schedule = generateSchedule(resultSet);
 			}
 			resultSet.close();
 			ps.close();
@@ -37,6 +38,7 @@ public class SchedulesDAO {
 		}
 
 	}
+
 	public boolean deleteSchedule(String scheduleId) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE sId = ?;");
@@ -44,13 +46,13 @@ public class SchedulesDAO {
 
 			int numAffected = ps.executeUpdate();
 			ps.close();
-			return (numAffected==1);
-		}
-		catch (Exception e){
-            throw new Exception("Failed to delete schedule: " + e.getMessage());
+			return (numAffected == 1);
+		} catch (Exception e) {
+			throw new Exception("Failed to delete schedule: " + e.getMessage());
 
 		}
 	}
+
 	public boolean updateSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE Schedules SET (startDate,endDate) values(?,?);");
@@ -60,14 +62,21 @@ public class SchedulesDAO {
 			int numAffected = ps.executeUpdate();
 
 			ps.close();
-			return (numAffected==1);
+			return (numAffected == 1);
 
-		}
-		catch(Exception e ) {
+		} catch (Exception e) {
 			throw new Exception("Failed to update report: " + e.getMessage());
 		}
 	}
 
+	/**
+	 * Generates a schedule from the db info
+	 *
+	 * @param resultSet
+	 *            Databse info
+	 * @return Schedule with info from the db
+	 * @throws Exception
+	 */
 	private Schedule generateSchedule(ResultSet resultSet) throws Exception {
 		String sId = resultSet.getString("sId");
 		String initDate = resultSet.getString("initDate");
@@ -79,66 +88,104 @@ public class SchedulesDAO {
 		String endTime = resultSet.getString("endTime");
 		int timeSlotDuration = resultSet.getInt("tsDuration");
 		String secretCode = resultSet.getString("secretCode");
-		return new Schedule(sId,initDate,initTime,orgId,startDate,endDate,
-				startTime,endTime,timeSlotDuration,secretCode);
+		return new Schedule(sId, initDate, initTime, orgId, startDate, endDate, startTime, endTime, timeSlotDuration,
+				secretCode);
 	}
-	public boolean addSchedule(Schedule schedule) throws Exception{
+
+	/**
+	 * Add schedule to db and fill TimeSlots db with time slots
+	 *
+	 * @param schedule
+	 *            Schedule to add to Schedules table
+	 * @return True if successful, false if bad schedule
+	 * @throws Exception
+	 */
+	public boolean addSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE sId=?;");
 			ps.setString(1, schedule.scheduleId);
 
 			ResultSet resultSet = ps.executeQuery();
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				Schedule s = generateSchedule(resultSet);
 				resultSet.close();
 				return false;
 			}
-			ps = conn.prepareStatement("INSERT INTO Schedules (sId,initDate,initTime,orgId,startDate,endDate,startTime,endTime,"
-					+ "tsDuration,secretCode) values(?,?,?,?,?,?,?,?,?,?);");
+			ps = conn.prepareStatement(
+					"INSERT INTO Schedules (sId,initDate,initTime,orgId,startDate,endDate,startTime,endTime,"
+							+ "tsDuration,secretCode) values(?,?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.scheduleId);
 			ps.setString(2, schedule.initialDate);
-			ps.setString(3,	schedule.initialTime);
+			ps.setString(3, schedule.initialTime);
 			ps.setString(4, schedule.organizerId);
 			ps.setString(5, schedule.startDate);
 			ps.setString(6, schedule.endDate);
 			ps.setString(7, schedule.startTime);
 			ps.setString(8, schedule.endTime);
-			ps.setInt(9, 	schedule.timeslotDuration);
-			ps.setString(10,schedule.secretCode);
+			ps.setInt(9, schedule.timeslotDuration);
+			ps.setString(10, schedule.secretCode);
 			ps.execute();
-			System.out.println("Succesfully added schedule: " + schedule.scheduleId);;
+
 			String startDate = schedule.startDate;
 			String endDate = schedule.endDate;
+			String startTime = schedule.startTime;
+			String endTime = schedule.endTime;
 			int tsDuration = schedule.timeslotDuration;
-			Integer endYearVal = new Integer(endDate.substring(0,4));
-			Integer endMonthVal = new Integer(endDate.substring(5,7));
+			Integer endYearVal = new Integer(endDate.substring(0, 4));
+			Integer endMonthVal = new Integer(endDate.substring(5, 7));
 			Integer endDayVal = new Integer(endDate.substring(8));
-			Integer startYearVal = new Integer(startDate.substring(0,4));
-			Integer startMonthVal = new Integer(startDate.substring(5,7));
+			Integer startYearVal = new Integer(startDate.substring(0, 4));
+			Integer startMonthVal = new Integer(startDate.substring(5, 7));
 			Integer startDayVal = new Integer(startDate.substring(8));
+			Integer startHour = new Integer(startTime.substring(0, 2));
+			Integer startMin = new Integer(startTime.substring(3));
+			Integer endHour = new Integer(endTime.substring(0, 2));
+			Integer endMin = new Integer(endTime.substring(3));
+			int totalDays = calcDays(endYearVal, endMonthVal, endDayVal)
+					- calcDays(startYearVal, startMonthVal, startDayVal);
+			int totalTimeSlots = 0;
+			if (totalDays < 0) {
+				return false;
+			} else if (totalDays == 0) {
+				totalTimeSlots = ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / tsDuration;
+			} else {
+				totalTimeSlots = totalDays * ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / tsDuration;
+			}
 
-			int totalTimeSlots = calcDays(endYearVal,endMonthVal,endDayVal)-
-					calcDays(startYearVal,startMonthVal,startDayVal);
+			for (int day = 0; day < totalDays; day++) {
+				for (int timeslot = 0; timeslot < totalTimeSlots; timeslot++) {
 
-			ps = conn.prepareStatement("INSERT INTO TimeSlots;");
+				}
+			}
+			System.out.println("Succesfully added schedule: " + schedule.scheduleId);
+			;
+
 			return true;
+		} catch (Exception e) {
+			throw new Exception("Failed to insert schedule: " + e.getMessage());
 		}
-		catch(Exception e) {
-			 throw new Exception("Failed to insert constant: " + e.getMessage());		}
+	}
+	private String getCurrentDate(int y, int m, int d) {
+		String date=null;
+		return date;
 	}
 	/**
-	 * Calculates the position of the year in Gregorian calendar
-	 * form e.g. will return x/365 where x is the position in a given year
-	 * @param y Year value
-	 * @param m Month value
-	 * @param d Day value
+	 * Calculates the position of the year in Gregorian calendar form e.g. will
+	 * return x/365 where x is the position in a given year
+	 *
+	 * @param y
+	 *            Year value
+	 * @param m
+	 *            Month value
+	 * @param d
+	 *            Day value
 	 * @return Position in given year
 	 */
 	private int calcDays(int y, int m, int d) {
 		int days = 0;
-		m = (m+9) % 12;
-		y = y - m/10;
-		days = 365 * y + y/4 -y/100 + y/400 + (m*306 +5)/10 + (d-1);
+		m = (m + 9) % 12;
+		y = y - m / 10;
+		days = 365 * y + y / 4 - y / 100 + y / 400 + (m * 306 + 5) / 10 + (d - 1);
 		return days;
 	}
 }
