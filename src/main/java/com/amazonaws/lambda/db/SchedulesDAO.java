@@ -3,6 +3,7 @@ package com.amazonaws.lambda.db;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.util.Random;
 
 import com.amazonaws.lambda.model.Schedule;
@@ -127,12 +128,29 @@ public class SchedulesDAO {
 			ps.setInt(9, schedule.timeslotDuration);
 			ps.setString(10, schedule.secretCode);
 			ps.execute();
+			addTimeSlots(schedule);
 
+			System.out.println("Succesfully added schedule: " + schedule.scheduleId);
+
+			return true;
+		} catch (Exception e) {
+			throw new Exception("Failed to insert schedule: " + e.getMessage());
+		}
+	}
+
+	private static boolean addTimeSlots(Schedule schedule) throws Exception {
+		try {
+			// Start date
 			String startDate = schedule.startDate;
+			// End date
 			String endDate = schedule.endDate;
+			// Start time
 			String startTime = schedule.startTime;
+			// End time
 			String endTime = schedule.endTime;
+			// Time slot duration
 			int tsDuration = schedule.timeslotDuration;
+			// Parse the values of both dates and time
 			Integer endYearVal = new Integer(endDate.substring(0, 4));
 			Integer endMonthVal = new Integer(endDate.substring(5, 7));
 			Integer endDayVal = new Integer(endDate.substring(8));
@@ -143,9 +161,12 @@ public class SchedulesDAO {
 			Integer startMin = new Integer(startTime.substring(3));
 			Integer endHour = new Integer(endTime.substring(0, 2));
 			Integer endMin = new Integer(endTime.substring(3));
+			// Calculator difference between 2 dates
 			int totalDays = calcDays(endYearVal, endMonthVal, endDayVal)
 					- calcDays(startYearVal, startMonthVal, startDayVal);
 			int totalTimeSlots = 0;
+
+			// Calculate # of time slots
 			if (totalDays < 0) {
 				return false;
 			} else if (totalDays == 0) {
@@ -154,34 +175,60 @@ public class SchedulesDAO {
 				totalTimeSlots = totalDays * ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / tsDuration;
 			}
 			/*
-			 * Returns the day of the week represented by this date.
-			 * The returned value (0 = Sunday, 1 = Monday, 2 = Tuesday,
-			 * 3 = Wednesday, 4 =Thursday, 5 = Friday, 6 = Saturday)
-			 * represents the day of the week that contains or begins
-			 * with the instant in time represented by this Date object,
-			 * as interpreted in the local time zone.
+			 * Returns the day of the week represented by this date. The returned value (0 =
+			 * Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 =Thursday, 5 = Friday, 6 =
+			 * Saturday) represents the day of the week that contains or begins with the
+			 * instant in time represented by this Date object, as interpreted in the local
+			 * time zone.
 			 */
 			Date currentDateObject = new Date(startYearVal, startMonthVal, startDayVal);
 			Random r = new Random();
 			String currentTime = startTime;
 			TimeSlotsDAO tsDAO = new TimeSlotsDAO();
-			Date endDateObject = new Date(endYearVal,endMonthVal,endDayVal);
+			Time currentTimeObject = new Time(startHour, startMin, 00);
+			Time endTimeObject = new Time(endHour, endMin, 00);
+			Date endDateObject = new Date(endYearVal, endMonthVal, endDayVal);
+			// Build time slots for schedule
 			for (int day = 0; day < totalDays; day++) {
-				int id = (int) (r.nextDouble()*totalTimeSlots+1);
-				int weekDay = currentDateObject.getDay();
-				String meetingID = schedule.scheduleId +id;
-				TimeSlot currentTimeSlot = new TimeSlot(meetingID, true, currentTime,
-						getNextTime(currentTime, startTime, endTime, tsDuration), false, weekDay);
-				tsDAO.addTimeSlot(currentTimeSlot);
-			}
-			System.out.println("Succesfully added schedule: " + schedule.scheduleId);
+				// If the current date is before the schedule's end date
+				if (currentDateObject.compareTo(endDateObject) < 0) {
+					//If the current time is before the day's ending time
+					if (currentTimeObject.compareTo(endTimeObject) < 0) {
+						// Get random id;
+						int id = (int) (r.nextDouble() * totalTimeSlots + 1);
+						// Get week day of the date
+						int weekDay = currentDateObject.getDay();
+						// Check if it not satuday or sunday
+						while (weekDay == 0 || weekDay == 6) {
+							// if it is increment, Date object takes care of updating the date correctly
+							currentDateObject.setDate(currentDateObject.getDay() + 1);
+							// Update weekDay
+							weekDay = currentDateObject.getDay();
+						}
+						String timeSlotID = schedule.scheduleId + id;
 
-			return true;
+						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, true, currentTime,
+								getNextTime(currentTime, startTime, endTime, tsDuration), false, weekDay);
+
+						tsDAO.addTimeSlot(currentTimeSlot);
+					}
+				}
+
+			}
 		} catch (Exception e) {
 			throw new Exception("Failed to insert schedule: " + e.getMessage());
 		}
+		return false;
 	}
-	private String getNextTime(String time, String startTime, String endTime, int tsDuration) {
+	/**
+	 * Returns String format of the next time
+	 * @param time 			String format of curreunt time
+	 * @param startTime 	String format of the start time of the day
+	 * @param endTime		String format of the end time of the day
+	 * @param tsDuration	Int duration of each time slot
+	 * @return				String format of the next time
+	 */
+	private static String getNextTime(String time, String startTime, String endTime, int tsDuration) {
 		String newTime = null;
 		Integer currentHr = new Integer(time.substring(0, 2));
 		Integer currentMin = new Integer(time.substring(3));
@@ -216,7 +263,7 @@ public class SchedulesDAO {
 	 * @param d	Day value
 	 * @return	String form of next date
 	 */
-	private String getNextDate(int y, int m, int d) {
+	private static String getNextDate(int y, int m, int d) {
 		String date=null;
 
 		//if december 31st
@@ -246,7 +293,7 @@ public class SchedulesDAO {
 	 * @param d	Day value
 	 * @return	String form of current date
 	 */
-	private String getCurrentDate(int y,int m ,int d) {
+	private static String getCurrentDate(int y,int m ,int d) {
 		return "" + y+"-"+m+"-"+d;
 	}
 	/**
@@ -261,7 +308,7 @@ public class SchedulesDAO {
 	 *            Day value
 	 * @return Position in given year
 	 */
-	private int calcDays(int y, int m, int d) {
+	private static int calcDays(int y, int m, int d) {
 		int days = 0;
 		m = (m + 9) % 12;
 		y = y - m / 10;

@@ -2,13 +2,12 @@ package com.amazonaws.lambda.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Time;
 
 import com.amazonaws.lambda.model.TimeSlot;
 
 public class TimeSlotsDAO {
 	java.sql.Connection conn;
-	
+
 	public TimeSlotsDAO() {
 		try {
 			conn = DatabaseUtil.connect();
@@ -16,7 +15,7 @@ public class TimeSlotsDAO {
 			conn = null;
 		}
 	}
-	
+
 	public TimeSlot getTimeSlot(String timeSlotId) throws Exception {
 		try {
 			TimeSlot timeSlot = null;
@@ -39,7 +38,7 @@ public class TimeSlotsDAO {
 		}
 
 	}
-	
+
 	public boolean deleteTimeSlot(TimeSlot timeSlot) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM TimeSlots WHERE tsId = ?;");
@@ -54,17 +53,17 @@ public class TimeSlotsDAO {
 
 		}
 	}
-	
+
 	private TimeSlot generateTimeSlot(ResultSet resultSet) throws Exception {
 		String timeSlotID = resultSet.getString("tsId");
 		boolean isOpen = resultSet.getBoolean("isOpen");
-		Time startTime = resultSet.getTime("startTime");
-		Time endTime = resultSet.getTime("endTime");
+		String startTime = resultSet.getString("startTime");
+		String endTime = resultSet.getString("endTime");
 		boolean isBooked = resultSet.getBoolean("isBooked");
 		int dayOfWeek = resultSet.getInt("day");
 		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek);
 	}
-	
+
 	public boolean addTimeSlot(TimeSlot timeSlot) throws Exception{
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE tsId=?;");
@@ -79,11 +78,11 @@ public class TimeSlotsDAO {
 			ps = conn.prepareStatement("INSERT INTO TimeSlots (tsId, isOpen, startTime, endTime, isBooked, day) values(?,?,?,?,?,?);");
 			ps.setString(1, timeSlot.timeSlotID);
 			ps.setBoolean(2, timeSlot.isOpen);
-			ps.setTime(3,timeSlot.startTime);
-			ps.setTime(4, timeSlot.endTime);
+			ps.setString(3,timeSlot.startTime);
+			ps.setString(4, timeSlot.endTime);
 			ps.setBoolean(5, timeSlot.isBooked);
 			ps.setInt(5, timeSlot.dayOfWeek);
-		
+
 			ps.execute();
 			System.out.println("Succesfully added time slot: " + timeSlot.timeSlotID);;
 			return true;
