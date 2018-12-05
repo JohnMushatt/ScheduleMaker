@@ -111,8 +111,8 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			try {
 				if (createSchedule(req.initDate, req.initTime, req.startDate, req.endDate, req.startTime, req.endTime,
 						req.tsDuration)) {
-					resp = new CreateScheduleResponse("Secret Code: " + currentSchedule.secretCode, 200);
-
+					resp = new CreateScheduleResponse(null, currentSchedule.secretCode, currentSchedule.startDate,
+							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration, 200);
 
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);

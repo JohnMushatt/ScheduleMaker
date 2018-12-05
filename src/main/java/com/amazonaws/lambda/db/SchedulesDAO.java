@@ -1,9 +1,12 @@
 package com.amazonaws.lambda.db;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Random;
 
 import com.amazonaws.lambda.model.Schedule;
+import com.amazonaws.lambda.model.TimeSlot;
 
 public class SchedulesDAO {
 	java.sql.Connection conn;
@@ -95,10 +98,9 @@ public class SchedulesDAO {
 	/**
 	 * Add schedule to db and fill TimeSlots db with time slots
 	 *
-	 * @param schedule
-	 *            Schedule to add to Schedules table
-	 * @return True if successful, false if bad schedule
-	 * @throws Exception
+	 * @param 	schedule	Schedule to add to Schedules table
+	 * @return 				True if successful, false if bad schedule
+	 * @throws 	Exception
 	 */
 	public boolean addSchedule(Schedule schedule) throws Exception {
 		try {
@@ -151,27 +153,105 @@ public class SchedulesDAO {
 			} else {
 				totalTimeSlots = totalDays * ((endHour * 60 + endMin) - (startHour * 60 + startMin)) / tsDuration;
 			}
-
+			/*
+			 * Returns the day of the week represented by this date.
+			 * The returned value (0 = Sunday, 1 = Monday, 2 = Tuesday,
+			 * 3 = Wednesday, 4 =Thursday, 5 = Friday, 6 = Saturday)
+			 * represents the day of the week that contains or begins
+			 * with the instant in time represented by this Date object,
+			 * as interpreted in the local time zone.
+			 */
+			Date currentDateObject = new Date(startYearVal, startMonthVal, startDayVal);
+			Random r = new Random();
+			String currentTime = startTime;
+			TimeSlotsDAO tsDAO = new TimeSlotsDAO();
+			Date endDateObject = new Date(endYearVal,endMonthVal,endDayVal);
 			for (int day = 0; day < totalDays; day++) {
-				for (int timeslot = 0; timeslot < totalTimeSlots; timeslot++) {
-
-				}
+				int id = (int) (r.nextDouble()*totalTimeSlots+1);
+				int weekDay = currentDateObject.getDay();
+				String meetingID = schedule.scheduleId +id;
+				TimeSlot currentTimeSlot = new TimeSlot(meetingID, true, currentTime,
+						getNextTime(currentTime, startTime, endTime, tsDuration), false, weekDay);
+				tsDAO.addTimeSlot(currentTimeSlot);
 			}
 			System.out.println("Succesfully added schedule: " + schedule.scheduleId);
-			;
 
 			return true;
 		} catch (Exception e) {
 			throw new Exception("Failed to insert schedule: " + e.getMessage());
 		}
 	}
-	private String getCurrentDate(int y, int m, int d) {
+	private String getNextTime(String time, String startTime, String endTime, int tsDuration) {
+		String newTime = null;
+		Integer currentHr = new Integer(time.substring(0, 2));
+		Integer currentMin = new Integer(time.substring(3));
+		Integer startHr = new Integer(startTime.substring(0,2));
+		Integer startMin = new Integer(startTime.substring(3));
+		Integer endHr = new Integer(endTime.substring(0, 2));
+		Integer endMin = new Integer(endTime.substring(3));
+		//If new day
+		if(currentHr==endHr && currentMin + tsDuration ==60) {
+			currentHr = startHr;
+			currentMin= 00;
+			return "" + currentHr +":" + currentMin;
+		}
+		//If new hr
+		else if(currentMin+tsDuration==60){
+			currentHr++;
+			currentMin=00;
+			return "" + currentHr +":" + currentMin;
+
+		}
+		//If new min
+		else {
+			currentMin+=tsDuration;
+			return "" + currentHr +":" + currentMin;
+
+		}
+	}
+	/**
+	 * Convert integer form of next date to string for db and object
+	 * @param y	Year value
+	 * @param m	Month value
+	 * @param d	Day value
+	 * @return	String form of next date
+	 */
+	private String getNextDate(int y, int m, int d) {
 		String date=null;
+
+		//if december 31st
+		if(m==12 && d==31) {
+			date = "" + (y+1) +"-"+"01"+"-"+"01";
+		}
+		//if end of normal month
+		else if((m==1 || m==3 ||m==5||m==7||m==8||m==10||m==12) && d==31) {
+			date = "" + y +"-"+(m+1)+"-"+"01";
+		}
+		//Feb
+		else if((m==2) && d==28) {
+			date = "" + y +"-"+"03"+"-"+"01";
+
+		}
+		//
+		else {
+			date = "" + y +"-"+m+"-"+"01";
+
+		}
 		return date;
 	}
 	/**
+	 * Get string form of current date
+	 * @param y Year value
+	 * @param m	Month value
+	 * @param d	Day value
+	 * @return	String form of current date
+	 */
+	private String getCurrentDate(int y,int m ,int d) {
+		return "" + y+"-"+m+"-"+d;
+	}
+	/**
 	 * Calculates the position of the year in Gregorian calendar form e.g. will
-	 * return x/365 where x is the position in a given year
+	 * return x where x is the position in a given year
 	 *
 	 * @param y
 	 *            Year value
