@@ -51,16 +51,6 @@ public class SchedulesDAO {
 
 		}
 	}
-	/*
-	public boolean updateSchedule(Schedule schedule) throws Exception{
-		try {
-			String query = "UPDATE Schedules SET "
-		}
-		catch(Exception e) {
-
-		}
-	}
-	*/
 	public boolean updateSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE Schedules SET (startDate,endDate) values(?,?);");
@@ -117,9 +107,38 @@ public class SchedulesDAO {
 			ps.setString(10,schedule.secretCode);
 			ps.execute();
 			System.out.println("Succesfully added schedule: " + schedule.scheduleId);;
+			String startDate = schedule.startDate;
+			String endDate = schedule.endDate;
+			int tsDuration = schedule.timeslotDuration;
+			Integer endYearVal = new Integer(endDate.substring(0,4));
+			Integer endMonthVal = new Integer(endDate.substring(5,7));
+			Integer endDayVal = new Integer(endDate.substring(8));
+			Integer startYearVal = new Integer(startDate.substring(0,4));
+			Integer startMonthVal = new Integer(startDate.substring(5,7));
+			Integer startDayVal = new Integer(startDate.substring(8));
+
+			int totalTimeSlots = calcDays(endYearVal,endMonthVal,endDayVal)-
+					calcDays(startYearVal,startMonthVal,startDayVal);
+
+			ps = conn.prepareStatement("INSERT INTO TimeSlots;");
 			return true;
 		}
 		catch(Exception e) {
 			 throw new Exception("Failed to insert constant: " + e.getMessage());		}
+	}
+	/**
+	 * Calculates the position of the year in Gregorian calendar
+	 * form e.g. will return x/365 where x is the position in a given year
+	 * @param y Year value
+	 * @param m Month value
+	 * @param d Day value
+	 * @return Position in given year
+	 */
+	private int calcDays(int y, int m, int d) {
+		int days = 0;
+		m = (m+9) % 12;
+		y = y - m/10;
+		days = 365 * y + y/4 -y/100 + y/400 + (m*306 +5)/10 + (d-1);
+		return days;
 	}
 }

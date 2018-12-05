@@ -93,20 +93,20 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			CreateMeetingRequest req = new Gson().fromJson(body, CreateMeetingRequest.class);
 			logger.log(req.toString());
 
-			CreateScheduleResponse resp;
+			CreateMeetingResponse resp;
 			try {
 				if (createMeeting(req.scheduleID, req.organizerID, req.timeslotID, req.participantName)) {
 					String r = "secretCode: " + currentMeeting.secretCode + "\nstimeSlotID: "
 							+ this.currentMeeting.timeSlotID;
-					resp = new CreateScheduleResponse(r, 200);
+					resp = new CreateMeetingResponse(r, 200);
 				} else {
-					resp = new CreateScheduleResponse(
+					resp = new CreateMeetingResponse(
 							"Unable to create meeting between " + req.participantName + "and " + req.organizerID, 403);
 					logger.log(resp.toString());
 
 				}
 			} catch (Exception e) {
-				resp = new CreateScheduleResponse(
+				resp = new CreateMeetingResponse(
 						"Unable to create meeting between " + req.participantName+ "and " + req.organizerID, 403);
 
 			}

@@ -24,16 +24,24 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 	public LambdaLogger logger = null;
 	private Schedule currentSchedule;
 
-	/**Creates schedule to place in db
+	/**
+	 * Creates schedule to place in db
 	 *
-	 * @param initDate 		Creation date of schedule
-	 * @param initTime		Create time of schedule
-	 * @param startDate		Start date of schedule
-	 * @param endDate		End date of schedule
-	 * @param startTime		Start time of schedule day
-	 * @param endTime		End time of schedule day
-	 * @param tsDuration	Timeslot duraiton
-	 * @return				True if added/updated false if not
+	 * @param initDate
+	 *            Creation date of schedule
+	 * @param initTime
+	 *            Create time of schedule
+	 * @param startDate
+	 *            Start date of schedule
+	 * @param endDate
+	 *            End date of schedule
+	 * @param startTime
+	 *            Start time of schedule day
+	 * @param endTime
+	 *            End time of schedule day
+	 * @param tsDuration
+	 *            Timeslot duraiton
+	 * @return True if added/updated false if not
 	 * @throws Exception
 	 */
 	boolean createSchedule(String initDate, String initTime, String startDate, String endDate, String startTime,
@@ -56,6 +64,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			return dao.updateSchedule(schedule);
 		}
 	}
+
 	/**
 	 * Handles http request to add/update schedule
 	 */
@@ -87,7 +96,6 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			if (body == null) {
 				body = event.toJSONString(); // this is only here to make testing easier
 			}
-			logger.log("JSON request parsed!");
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
 			response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
@@ -105,20 +113,15 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 						req.tsDuration)) {
 					resp = new CreateScheduleResponse("Secret Code: " + currentSchedule.secretCode, 200);
 
-					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-					logger.log("JSON Response updated");
 
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
 					logger.log(resp.toString());
-					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-					logger.log("JSON Response updated");
 
 				}
 			} catch (Exception e) {
 				resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
 				// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-				logger.log("JSON Response updated");
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));
