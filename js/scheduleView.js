@@ -20,12 +20,12 @@ function displayOrgSchedule(){
 	var tableData = document.getElementById('table');
 //var js = JSON.parse(result);
 
-var output ="<table><tr><TH />";
+var output ="<table ><tr><TH />";
 var dates = "04-28";
 var startTime = 1000;
 var tsd = 20;
 var hours = (1600-startTime)/100;
-var id = 143532;
+var id = 'slot';
 var looper = (1+(hours*60)/tsd);
  		output = output + "<th class='button'>Monday " + dates + "</th>";
 var dates = nextDay(dates);
@@ -37,10 +37,14 @@ var dates = nextDay(dates);
 var dates = nextDay(dates);
  	output = output + "<th class='button'>Friday " + dates + "</th></tr>";
 
+ 	var v =0;
  	for(var i =0; i<looper; i++){
+ 		
  		output = output + "<tr> <th class='button'>" + startTime.toString().substr(0,2)+":"+startTime.toString().substr(2,3)+ "</th>";
  		for(var k=0; k<5; k++){
- 			output = output + "<td class='button' id="+id+">open</td>";
+ 			output = output + "<td class='button' id="+v+" onclick='javascript:closeSlot("+v+")'>open</td>";
+ 			console.log(output);
+ 			v++;
  		}
  		output = output + "</tr>"
  		if(startTime.toString().substr(2,3) == (60-tsd)){
@@ -114,4 +118,8 @@ function nextDay(date){
 	console.log(newDate);
 	//alert(newDate);
 	return newDate;
+}
+
+function saySomething(string){
+	alert(string);
 }
