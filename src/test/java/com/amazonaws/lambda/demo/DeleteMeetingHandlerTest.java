@@ -19,11 +19,13 @@ public class DeleteMeetingHandlerTest {
 
 	private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
 	private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
+
 	Context createContext(String apiCall) {
 		TestContext ctx = new TestContext();
 		ctx.setFunctionName(apiCall);
 		return ctx;
 	}
+
 	@Test
 	public void testDeleteMeetingHandler() throws IOException {
 		CreateMeetingHandler createHandler = new CreateMeetingHandler();
@@ -46,4 +48,5 @@ public class DeleteMeetingHandlerTest {
 		OutputStream deleteOutput = new ByteArrayOutputStream();
 
 		deleteHandler.handleRequest(deleteInput, deleteOutput, createContext("deleteMeeting"));
+	}
 }

@@ -131,7 +131,6 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 		logger.log("end result:" + responseJson.toJSONString());
 
-		logger.log(responseJson.toJSONString());
 
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
 		writer.write(responseJson.toJSONString());

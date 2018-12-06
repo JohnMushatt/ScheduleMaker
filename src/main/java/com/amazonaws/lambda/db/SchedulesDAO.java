@@ -153,7 +153,7 @@ public class SchedulesDAO {
 			// Parse the values of both dates and time
 			Integer endYearVal = new Integer(endDate.substring(0, 4));
 			Integer endMonthVal = new Integer(endDate.substring(5, 7));
-			Integer endDayVal = new Integer(endDate.substring(8));
+			Integer endDayVal = new Integer(endDate.substring(8,10));
 			Integer startYearVal = new Integer(startDate.substring(0, 4));
 			Integer startMonthVal = new Integer(startDate.substring(5, 7));
 			Integer startDayVal = new Integer(startDate.substring(8));
@@ -195,7 +195,7 @@ public class SchedulesDAO {
 					//If the current time is before the day's ending time
 					if (currentTimeObject.compareTo(endTimeObject) < 0) {
 						// Get random id;
-						int id = (int) (r.nextDouble() * totalTimeSlots + 1);
+						String id = schedule.scheduleId+day;
 						// Get week day of the date
 						int weekDay = currentDateObject.getDay();
 						// Check if it not satuday or sunday
@@ -206,9 +206,11 @@ public class SchedulesDAO {
 							weekDay = currentDateObject.getDay();
 						}
 						String timeSlotID = schedule.scheduleId + id;
+						String nextTime =getNextTime(currentTime, startTime, endTime, tsDuration);
+						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime,nextTime,
+								0, weekDay,schedule.scheduleId);
 
-						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, true, currentTime,
-								getNextTime(currentTime, startTime, endTime, tsDuration), false, weekDay);
+
 
 						tsDAO.addTimeSlot(currentTimeSlot);
 					}
