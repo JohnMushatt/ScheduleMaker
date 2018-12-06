@@ -59,7 +59,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 				tsDuration, secretCode);
 		currentSchedule = schedule;
 		if (exist == null) {
-			return dao.addSchedule(schedule);
+			boolean success =dao.addSchedule(schedule);
+			if(success) {
+				dao.addTimeSlots(schedule);
+			}
+			return success;
 		} else {
 			return dao.updateSchedule(schedule);
 		}
@@ -121,14 +125,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 				}
 			} catch (Exception e) {
 				resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
-				// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));
 		}
 
-		// responseJson.put("body", new Gson().toJson(resp));
-		// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 		logger.log("end result:" + responseJson.toJSONString());
 
 
@@ -136,6 +137,5 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		writer.write(responseJson.toJSONString());
 		writer.close();
 
-		System.out.println("THIS IS THE JSON RESPONSE\n\n" + responseJson.toString());
 	}
 }

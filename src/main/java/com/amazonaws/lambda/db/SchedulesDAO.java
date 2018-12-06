@@ -128,7 +128,6 @@ public class SchedulesDAO {
 			ps.setInt(9, schedule.timeslotDuration);
 			ps.setString(10, schedule.secretCode);
 			ps.execute();
-			addTimeSlots(schedule);
 
 			System.out.println("Succesfully added schedule: " + schedule.scheduleId);
 
@@ -138,7 +137,7 @@ public class SchedulesDAO {
 		}
 	}
 
-	private static boolean addTimeSlots(Schedule schedule) throws Exception {
+	public boolean addTimeSlots(Schedule schedule) throws Exception {
 		try {
 			// Start date
 			String startDate = schedule.startDate;
@@ -189,13 +188,16 @@ public class SchedulesDAO {
 			Time endTimeObject = new Time(endHour, endMin, 00);
 			Date endDateObject = new Date(endYearVal, endMonthVal, endDayVal);
 			// Build time slots for schedule
-			for (int day = 0; day < totalDays; day++) {
+			int day=0;
+			String id = schedule.scheduleId;
+			while(day < totalDays) {
 				// If the current date is before the schedule's end date
+				id+=day;
 				if (currentDateObject.compareTo(endDateObject) < 0) {
 					//If the current time is before the day's ending time
-					if (currentTimeObject.compareTo(endTimeObject) < 0) {
+					while(currentTimeObject.compareTo(endTimeObject) < 0) {
 						// Get random id;
-						String id = schedule.scheduleId+day;
+
 						// Get week day of the date
 						int weekDay = currentDateObject.getDay();
 						// Check if it not satuday or sunday
@@ -205,7 +207,7 @@ public class SchedulesDAO {
 							// Update weekDay
 							weekDay = currentDateObject.getDay();
 						}
-						String timeSlotID = schedule.scheduleId + id;
+						String timeSlotID =id+currentTimeObject.toLocalTime().toString();
 						String nextTime =getNextTime(currentTime, startTime, endTime, tsDuration);
 						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime,nextTime,
 								0, weekDay,schedule.scheduleId);
@@ -213,7 +215,12 @@ public class SchedulesDAO {
 
 
 						tsDAO.addTimeSlot(currentTimeSlot);
+						currentTime=nextTime;
+						currentTimeObject.setMinutes(currentTimeObject.getMinutes()+tsDuration);
 					}
+					day++;
+					currentTimeObject = new Time(startHour, startMin, 00);
+					currentDateObject.setDate(currentDateObject.getDate()+1);
 				}
 
 			}
@@ -231,7 +238,6 @@ public class SchedulesDAO {
 	 * @return				String format of the next time
 	 */
 	private static String getNextTime(String time, String startTime, String endTime, int tsDuration) {
-		String newTime = null;
 		Integer currentHr = new Integer(time.substring(0, 2));
 		Integer currentMin = new Integer(time.substring(3));
 		Integer startHr = new Integer(startTime.substring(0,2));

@@ -61,7 +61,7 @@ public class TimeSlotsDAO {
 		String endTime = resultSet.getString("endTime");
 		int isBooked = resultSet.getInt("isBooked");
 		int dayOfWeek = resultSet.getInt("day");
-		String scheduleID = resultSet.getString("scheduleID");
+		String scheduleID = resultSet.getString("sId");
 		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek,scheduleID);
 	}
 
@@ -89,7 +89,8 @@ public class TimeSlotsDAO {
 			return true;
 		}
 		catch(Exception e) {
-			 throw new Exception("Failed to add time slot " + e.getMessage());		}
+			e.printStackTrace();
+			throw new Exception("Failed to add time slot " + e.getMessage());		}
 	}
 
 }
