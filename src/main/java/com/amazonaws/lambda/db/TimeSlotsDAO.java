@@ -23,9 +23,9 @@ public class TimeSlotsDAO {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE tsId=?;");
 			ps.setString(1, timeSlotId);
 
-			ResultSet resultSet  = ps.executeQuery();
+			ResultSet resultSet = ps.executeQuery();
 
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				timeSlot = generateTimeSlot(resultSet);
 			}
 			resultSet.close();
@@ -46,10 +46,9 @@ public class TimeSlotsDAO {
 
 			int numAffected = ps.executeUpdate();
 			ps.close();
-			return (numAffected==1);
-		}
-		catch (Exception e){
-            throw new Exception("Failed to delete time slot: " + e.getMessage());
+			return (numAffected == 1);
+		} catch (Exception e) {
+			throw new Exception("Failed to delete time slot: " + e.getMessage());
 
 		}
 	}
@@ -63,36 +62,38 @@ public class TimeSlotsDAO {
 		int dayOfWeek = resultSet.getInt("day");
 		String scheduleID = resultSet.getString("sId");
 		String date = resultSet.getString("date");
-		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek,scheduleID,date);
+		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek, scheduleID, date);
 	}
 
-	public boolean addTimeSlot(TimeSlot timeSlot) throws Exception{
+	public boolean addTimeSlot(TimeSlot timeSlot) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE tsId=?;");
 			ps.setString(1, timeSlot.timeSlotID);
 
 			ResultSet resultSet = ps.executeQuery();
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				TimeSlot ts = generateTimeSlot(resultSet);
 				resultSet.close();
 				return false;
 			}
-			ps = conn.prepareStatement("INSERT INTO TimeSlots (tsId, isOpen, startTime, endTime, isBooked, day, sId,date) values(?,?,?,?,?,?,?,?);");
+			ps = conn.prepareStatement(
+					"INSERT INTO TimeSlots (tsId, isOpen, startTime, endTime, isBooked, day, sId,date) values(?,?,?,?,?,?,?,?);");
 			ps.setString(1, timeSlot.timeSlotID);
-			ps.setInt(2, 	timeSlot.isOpen);
-			ps.setString(3,	timeSlot.startTime);
+			ps.setInt(2, timeSlot.isOpen);
+			ps.setString(3, timeSlot.startTime);
 			ps.setString(4, timeSlot.endTime);
-			ps.setInt(5, 	timeSlot.isBooked);
-			ps.setInt(6, 	timeSlot.dayOfWeek);
+			ps.setInt(5, timeSlot.isBooked);
+			ps.setInt(6, timeSlot.dayOfWeek);
 			ps.setString(7, timeSlot.scheduleID);
 			ps.setString(8, timeSlot.date);
 			ps.execute();
-			System.out.println("Succesfully added time slot: " + timeSlot.timeSlotID);;
+			System.out.println("Succesfully added time slot: startTime= " + timeSlot.startTime + "\tendTime= " + timeSlot.endTime + "\tdate= " + timeSlot.date);
+			;
 			return true;
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("Failed to add time slot " + e.getMessage());		}
+			throw new Exception("Failed to add time slot " + e.getMessage());
+		}
 	}
 
 }

@@ -210,7 +210,7 @@ public class SchedulesDAO {
 						String timeSlotID =id+currentTimeObject.toLocalTime().toString();
 						String nextTime =getNextTime(currentTime, startTime, endTime, tsDuration);
 						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime,nextTime,
-								0, weekDay,schedule.scheduleId,getCurrentDate(currentDateObject.getYear(), currentDateObject.getMonth(), currentDateObject.getDay()));
+								0, weekDay,schedule.scheduleId,getCurrentDate(currentDateObject.getYear(), currentDateObject.getMonth(), currentDateObject.getDate()));
 
 
 
@@ -219,8 +219,9 @@ public class SchedulesDAO {
 						currentTimeObject.setMinutes(currentTimeObject.getMinutes()+tsDuration);
 					}
 					day++;
-					currentTimeObject = new Time(startHour, startMin, 00);
+					currentTimeObject = new Time(startHour, startMin,0);
 					currentDateObject.setDate(currentDateObject.getDate()+1);
+					currentTime = startTime;
 				}
 
 			}
@@ -248,13 +249,13 @@ public class SchedulesDAO {
 		if(currentHr==endHr && currentMin + tsDuration ==60) {
 			currentHr = startHr;
 			currentMin= 00;
-			return "" + currentHr +":" + currentMin;
+			return "" + currentHr +":" + "00";
 		}
 		//If new hr
 		else if(currentMin+tsDuration==60){
 			currentHr++;
 			currentMin=00;
-			return "" + currentHr +":" + currentMin;
+			return "" + currentHr +":" + "00";
 
 		}
 		//If new min
