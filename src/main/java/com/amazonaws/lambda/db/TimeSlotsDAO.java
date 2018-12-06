@@ -62,7 +62,8 @@ public class TimeSlotsDAO {
 		int isBooked = resultSet.getInt("isBooked");
 		int dayOfWeek = resultSet.getInt("day");
 		String scheduleID = resultSet.getString("sId");
-		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek,scheduleID);
+		String date = resultSet.getString("date");
+		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek,scheduleID,date);
 	}
 
 	public boolean addTimeSlot(TimeSlot timeSlot) throws Exception{
@@ -76,7 +77,7 @@ public class TimeSlotsDAO {
 				resultSet.close();
 				return false;
 			}
-			ps = conn.prepareStatement("INSERT INTO TimeSlots (tsId, isOpen, startTime, endTime, isBooked, day, sId) values(?,?,?,?,?,?,?);");
+			ps = conn.prepareStatement("INSERT INTO TimeSlots (tsId, isOpen, startTime, endTime, isBooked, day, sId,date) values(?,?,?,?,?,?,?,?);");
 			ps.setString(1, timeSlot.timeSlotID);
 			ps.setInt(2, 	timeSlot.isOpen);
 			ps.setString(3,	timeSlot.startTime);
@@ -84,6 +85,7 @@ public class TimeSlotsDAO {
 			ps.setInt(5, 	timeSlot.isBooked);
 			ps.setInt(6, 	timeSlot.dayOfWeek);
 			ps.setString(7, timeSlot.scheduleID);
+			ps.setString(8, timeSlot.date);
 			ps.execute();
 			System.out.println("Succesfully added time slot: " + timeSlot.timeSlotID);;
 			return true;

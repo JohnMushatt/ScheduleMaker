@@ -8,9 +8,9 @@ public class TimeSlot {
 	public int isBooked;
 	public int dayOfWeek;
 	public String scheduleID;
-
+	public String date;
 	public TimeSlot(String timeSlotID, int isOpen, String startTime, String endTime, int isBooked, int dayOfWeek,
-			String scheduleID) {
+			String scheduleID,String date) {
 		this.timeSlotID = timeSlotID;
 		this.isOpen = isOpen;
 		this.startTime = startTime;
@@ -18,5 +18,6 @@ public class TimeSlot {
 		this.isBooked = isBooked;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleID=scheduleID;
+		this.date = date;
 	}
 }

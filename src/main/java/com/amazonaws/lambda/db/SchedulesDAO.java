@@ -210,7 +210,7 @@ public class SchedulesDAO {
 						String timeSlotID =id+currentTimeObject.toLocalTime().toString();
 						String nextTime =getNextTime(currentTime, startTime, endTime, tsDuration);
 						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime,nextTime,
-								0, weekDay,schedule.scheduleId);
+								0, weekDay,schedule.scheduleId,getCurrentDate(currentDateObject.getYear(), currentDateObject.getMonth(), currentDateObject.getDay()));
 
 
 
@@ -302,7 +302,23 @@ public class SchedulesDAO {
 	 * @return	String form of current date
 	 */
 	private static String getCurrentDate(int y,int m ,int d) {
-		return "" + y+"-"+m+"-"+d;
+		String date = "";
+		String month ="";
+		String day = "";
+		if(m<10) {
+			month = "0"+m;
+		}
+		else {
+			month = ""+m;
+		}
+		if(d < 10) {
+			day = "0"+d;
+		}
+		else {
+			day = ""+d;
+		}
+		date = y+"-"+month+"-"+day;
+		return date;
 	}
 	/**
 	 * Calculates the position of the year in Gregorian calendar form e.g. will
