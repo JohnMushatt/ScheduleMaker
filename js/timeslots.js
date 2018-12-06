@@ -12,7 +12,7 @@ function closeSlot(data){
 	}
 }
 
-function processDelete(val) {
+function handleTimeSlotClick(val) {
 	  var data = {};
 	  data["name"] = val;
 

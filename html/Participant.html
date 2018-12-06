@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <HEAD>
+<script type='text/javascript' src='../create.js'></script>
+<script type='text/javascript' src='../api.js'></script>
+<script type='text/javascript' src='../scheduleView.js'></script>
+<script type='text/javascript' src='../timeslots.js'></script>
+
 <STYLE>
 body {background-color: lightskyblue}
 h1 {background-color: ghostwhite}
@@ -12,7 +17,7 @@ width: 4rem;
   border: 1px solid black;}
   td{
   background-color: ghostwhite;}
-  .button {
+  .button:hover {
     color: black;
     text-align: center;
     font-size: 16px;
@@ -55,25 +60,13 @@ width: 4rem;
 		</form>
  	</p></div>
  
-<div class="side"><table>
-<caption>Click on a slot to schedule a meeting</caption>
- 	<tr>
- 		<TH />
- 		<th>Monday</th>
- 		<th>Tuesday</th>
- 		<th>Wednesday</th>
- 		<th>Thursday</th>
- 		<th>Friday</th>
- 	</tr>
- 	<script type="text/javascript">
- 	for(var k=0; k<6; k++){
- 	document.write("<tr>")
- 	 		document.write("<th>Time</th>");
- 	 		for (var j=0; j<5; j++){
- 	 	 		document.write("<td class='button'>test</td>")
- 	 	 		}
-	 	document.write("</tr>")
-	 	}
- 	</script>
- </div>
+<button onclick="Javascript:displayPartSchedule()">GO</button>
+</div>
+
+<div id="searchResultsDiv"><textarea rows="20" id="searchResults" readonly></textarea></div>
+
+<div class="side" id="table"><table>
+
+</table>
+</div>
 </html>

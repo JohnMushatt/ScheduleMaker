@@ -69,7 +69,14 @@ td {
 			name="startTime" value="ex. hh:ss" />
 		<p>
 			End Time<input name="endTime" value="ex. hh:ss" /> Time Slot
-			Duration <input name="slotDuration" value="ex. 15" />
+			Duration <select name="slotDuration">
+			<option value= "10"> 10 minutes</option>
+			<option value= "15"> 15 minutes</option>
+			<option value= "20"> 20 minutes</option>
+			<option value= "30"> 30 minutes</option>
+			<option value= "60"> 60 minutes</option>
+			</select>
+			<!--  <input name="slotDuration" value="ex. 15" />-->
 		</p>
 		<input type="button" value="Create Schedule"
 			onClick="JavaScript:handleCreateClick(this)">
