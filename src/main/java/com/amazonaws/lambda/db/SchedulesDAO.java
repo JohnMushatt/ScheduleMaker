@@ -190,10 +190,10 @@ public class SchedulesDAO {
 			// Build time slots for schedule
 			int day=0;
 			String id = schedule.scheduleId;
-			while(day < totalDays) {
+			while(day <= totalDays) {
 				// If the current date is before the schedule's end date
 				id+=day;
-				if (currentDateObject.compareTo(endDateObject) < 0) {
+				if (currentDateObject.compareTo(endDateObject) <= 0) {
 					//If the current time is before the day's ending time
 					while(currentTimeObject.compareTo(endTimeObject) < 0) {
 						// Get random id;

@@ -2,6 +2,8 @@ package com.amazonaws.lambda.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.amazonaws.lambda.model.TimeSlot;
 
@@ -64,7 +66,30 @@ public class TimeSlotsDAO {
 		String date = resultSet.getString("date");
 		return new TimeSlot(timeSlotID, isOpen, startTime, endTime, isBooked, dayOfWeek, scheduleID, date);
 	}
+	public List<TimeSlot> getTimeSlotsInWeek(String scheduleID) throws Exception {
+		List<TimeSlot> timeSlots= new ArrayList<>();
+        try {
 
+             //want to get wId in TimeSlots
+
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=?;");
+            ps.setString(1,scheduleID);
+            ResultSet resultSet = ps.executeQuery();
+
+            while(resultSet.next()) {
+            	TimeSlot t = generateTimeSlot(resultSet);
+            	timeSlots.add(t);
+
+            }
+            resultSet.close();
+            ps.close();
+            return timeSlots;
+        } catch (Exception e) {
+
+            throw new Exception("Failed to review schedule");
+
+        }
+	}
 	public boolean addTimeSlot(TimeSlot timeSlot) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE tsId=?;");
