@@ -1,5 +1,6 @@
 package com.amazonaws.lambda.db;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -120,5 +121,152 @@ public class TimeSlotsDAO {
 			throw new Exception("Failed to add time slot " + e.getMessage());
 		}
 	}
+	public List<TimeSlot> getTimeSlotsInWeek(String scheduleId, String date) throws Exception {
+
+        try {
+
+             //SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+             String year = date.substring(0, 4);
+
+             String month = date.substring(5,7);
+
+             String day = date.substring(8,10);
+
+
+
+             int y = Integer.parseInt(year);
+
+             int m = Integer.parseInt(month);
+
+             int d = Integer.parseInt(day);
+
+
+
+             Date thisDate = new Date(y, m, d);
+
+             Date firstDay = new Date(y, m, d+1);
+
+             Date secondDay = new Date(y, m, d+2);
+
+             Date thirdDay = new Date(y, m, d+3);
+
+             Date fourthDay = new Date(y, m, d+4);
+
+
+
+             String firstDayString = firstDay.toString();
+
+             String secondDayString = secondDay.toString();
+
+             String thirdDayString = thirdDay.toString();
+
+             String fourthDayString = fourthDay.toString();
+
+
+
+             List<TimeSlot> timeslots = new ArrayList<>();
+
+             TimeSlotsDAO dao = new TimeSlotsDAO();
+
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+
+            ps.setString(1, scheduleId);
+
+            ps.setString(2, date);
+
+            ResultSet resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, firstDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, secondDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, thirdDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, fourthDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            resultSet.close();
+
+            ps.close();
+
+            return timeslots;
+
+
+
+        } catch (Exception e) {
+
+            throw new Exception("Failed to review schedule");
+
+        }
+
+    }
 
 }
