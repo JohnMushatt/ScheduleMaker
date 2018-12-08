@@ -1,0 +1,46 @@
+<html>
+<HEAD>
+<STYLE>
+body {background-color: lightskyblue}
+h1 {background-color: ghostwhite}
+button {margin: 25px}
+th {background: lightgrey;
+bordercolor: white}
+tr, th, td {text-align: center;
+width: 4rem;
+  height: 2rem;
+  border: 1px solid black;}
+.side {
+   display:inline-block;
+   }
+.closed {
+	background: grey
+}
+
+</STYLE>
+<SCRIPT type="text/javascript">
+</SCRIPT>
+</HEAD>
+
+<h1>Scheduler</h1>
+<h3>System Admin</h3>
+<center>
+	<button>Delete Old Schedule</button> 
+	<button>Find Meeting Schedule</button> 
+</center>
+
+<div class="side">
+	<form name = "deleteOld">
+		Days Old<input name="daysOld" value="">
+	</form>
+	<form name="findSchedulesForm" method="get" name="findSchedules">
+		Hours Old<input name="hoursOld" value="">
+	</form>
+
+<div class="side"><p><TEXTAREA rows="30" cols="80" readonly>
+</TEXTAREA>
+ </p></div>
+ 
+
+ </div>
+</html>
