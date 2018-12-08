@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.amazonaws.lambda.model.Schedule;
@@ -188,43 +190,39 @@ public class SchedulesDAO {
 			Time endTimeObject = new Time(endHour, endMin, 00);
 			Date endDateObject = new Date(endYearVal, endMonthVal, endDayVal);
 			// Build time slots for schedule
-			int day=0;
+			int day=1;
 			String id = schedule.scheduleId;
-			while(day <= totalDays) {
-				// If the current date is before the schedule's end date
-				id+=day;
-				if (currentDateObject.compareTo(endDateObject) <= 0) {
-					//If the current time is before the day's ending time
-					while(currentTimeObject.compareTo(endTimeObject) < 0) {
-						// Get random id;
+			// If the current date is before the schedule's end date
+			while (currentDateObject.compareTo(endDateObject) <= 0) {
+				// If the current time is before the day's ending time
+				while (currentTimeObject.compareTo(endTimeObject) < 0) {
+					// Get random id;
+					id= schedule.scheduleId+currentDateObject.getDate();
 
-						// Get week day of the date
-						int weekDay = currentDateObject.getDay();
-						// Check if it not satuday or sunday
-						while (weekDay == 0 || weekDay == 6) {
-							// if it is increment, Date object takes care of updating the date correctly
-							currentDateObject.setDate(currentDateObject.getDay() + 1);
-							// Update weekDay
-							weekDay = currentDateObject.getDay();
-						}
-						String timeSlotID =id+currentTimeObject.toLocalTime().toString();
-						String nextTime =getNextTime(currentTime, startTime, endTime, tsDuration);
-						TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime,nextTime,
-								0, weekDay,schedule.scheduleId,getCurrentDate(currentDateObject.getYear(), currentDateObject.getMonth(), currentDateObject.getDate()));
-
-
-
-						tsDAO.addTimeSlot(currentTimeSlot);
-						currentTime=nextTime;
-						currentTimeObject.setMinutes(currentTimeObject.getMinutes()+tsDuration);
+					// Get week day of the date
+					int weekDay = currentDateObject.getDay();
+					// Check if it not satuday or sunday
+					while (weekDay == 0 || weekDay == 6) {
+						// if it is increment, Date object takes care of updating the date correctly
+						currentDateObject.setDate(currentDateObject.getDay() + 1);
+						// Update weekDay
+						weekDay = currentDateObject.getDay();
 					}
-					day++;
-					currentTimeObject = new Time(startHour, startMin,0);
-					currentDateObject.setDate(currentDateObject.getDate()+1);
-					currentTime = startTime;
-				}
+					String timeSlotID = id + currentTimeObject.toLocalTime().toString();
+					String nextTime = getNextTime(currentTime, startTime, endTime, tsDuration);
+					TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime, nextTime, 0, weekDay,
+							schedule.scheduleId, getCurrentDate(currentDateObject.getYear(),
+									currentDateObject.getMonth(), currentDateObject.getDate()));
 
+					tsDAO.addTimeSlot(currentTimeSlot);
+					currentTime = nextTime;
+					currentTimeObject.setMinutes(currentTimeObject.getMinutes() + tsDuration);
+				}
+				currentTimeObject = new Time(startHour, startMin, 0);
+				currentDateObject.setDate(currentDateObject.getDate() + 1);
+				currentTime = startTime;
 			}
+
 		} catch (Exception e) {
 			throw new Exception("Failed to insert schedule: " + e.getMessage());
 		}
@@ -295,6 +293,153 @@ public class SchedulesDAO {
 		}
 		return date;
 	}
+	public List<TimeSlot> getTimeSlotsInWeek(String scheduleId, String date) throws Exception {
+
+        try {
+
+             //SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+             String year = date.substring(0, 4);
+
+             String month = date.substring(5,7);
+
+             String day = date.substring(8,10);
+
+
+
+             int y = Integer.parseInt(year);
+
+             int m = Integer.parseInt(month);
+
+             int d = Integer.parseInt(day);
+
+
+
+             Date thisDate = new Date(y, m, d);
+
+             Date firstDay = new Date(y, m, d+1);
+
+             Date secondDay = new Date(y, m, d+2);
+
+             Date thirdDay = new Date(y, m, d+3);
+
+             Date fourthDay = new Date(y, m, d+4);
+
+
+
+             String firstDayString = firstDay.toString();
+
+             String secondDayString = secondDay.toString();
+
+             String thirdDayString = thirdDay.toString();
+
+             String fourthDayString = fourthDay.toString();
+
+
+
+             List<TimeSlot> timeslots = new ArrayList<>();
+
+             TimeSlotsDAO dao = new TimeSlotsDAO();
+
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+
+            ps.setString(1, scheduleId);
+
+            ps.setString(2, date);
+
+            ResultSet resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, firstDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, secondDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, thirdDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            ps.setString(2, fourthDayString);
+
+            resultSet = ps.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+            TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+
+            timeslots.add(timeslot);
+
+            }
+
+
+
+            resultSet.close();
+
+            ps.close();
+
+            return timeslots;
+
+
+
+        } catch (Exception e) {
+
+            throw new Exception("Failed to review schedule");
+
+        }
+
+    }
 	/**
 	 * Get string form of current date
 	 * @param y Year value
