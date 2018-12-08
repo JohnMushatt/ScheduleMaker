@@ -99,8 +99,9 @@ public class SchedulesDAO {
 		String endTime = resultSet.getString("endTime");
 		int timeSlotDuration = resultSet.getInt("tsDuration");
 		String secretCode = resultSet.getString("secretCode");
+		String accessCode = resultSet.getString("accessCode");
 		return new Schedule(sId, initDate, initTime, orgId, startDate, endDate, startTime, endTime, timeSlotDuration,
-				secretCode);
+				secretCode,accessCode);
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class SchedulesDAO {
 			}
 			ps = conn.prepareStatement(
 					"INSERT INTO Schedules (sId,initDate,initTime,orgId,startDate,endDate,startTime,endTime,"
-							+ "tsDuration,secretCode) values(?,?,?,?,?,?,?,?,?,?);");
+							+ "tsDuration,secretCode,accessCode) values(?,?,?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.scheduleId);
 			ps.setString(2, schedule.initialDate);
 			ps.setString(3, schedule.initialTime);
@@ -134,6 +135,7 @@ public class SchedulesDAO {
 			ps.setString(8, schedule.endTime);
 			ps.setInt(9, schedule.timeslotDuration);
 			ps.setString(10, schedule.secretCode);
+			ps.setString(11, schedule.accessCode);
 			ps.execute();
 
 			System.out.println("Succesfully added schedule: " + schedule.scheduleId);
@@ -193,13 +195,13 @@ public class SchedulesDAO {
 			 * instant in time represented by this Date object, as interpreted in the local
 			 * time zone.
 			 */
-			Date currentDateObject = new Date(startYearVal, startMonthVal, startDayVal);
+			Date currentDateObject = new Date(startYearVal, startMonthVal-1, startDayVal);
 			Random r = new Random();
 			String currentTime = startTime;
 			TimeSlotsDAO tsDAO = new TimeSlotsDAO();
 			Time currentTimeObject = new Time(startHour, startMin, 00);
 			Time endTimeObject = new Time(endHour, endMin, 00);
-			Date endDateObject = new Date(endYearVal, endMonthVal, endDayVal);
+			Date endDateObject = new Date(endYearVal, endMonthVal-1, endDayVal);
 			// Build time slots for schedule
 			int day=1;
 			String id = schedule.scheduleId;
@@ -215,7 +217,7 @@ public class SchedulesDAO {
 					// Check if it not satuday or sunday
 					while (weekDay == 0 || weekDay == 6) {
 						// if it is increment, Date object takes care of updating the date correctly
-						currentDateObject.setDate(currentDateObject.getDay() + 1);
+						currentDateObject.setDate(currentDateObject.getDate() + 1);
 						// Update weekDay
 						weekDay = currentDateObject.getDay();
 					}
@@ -223,7 +225,7 @@ public class SchedulesDAO {
 					String nextTime = getNextTime(currentTime, startTime, endTime, tsDuration);
 					TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime, nextTime, 0, weekDay,
 							schedule.scheduleId, getCurrentDate(currentDateObject.getYear(),
-									currentDateObject.getMonth(), currentDateObject.getDate()));
+									currentDateObject.getMonth()+1, currentDateObject.getDate()));
 
 					tsDAO.addTimeSlot(currentTimeSlot);
 					currentTime = nextTime;

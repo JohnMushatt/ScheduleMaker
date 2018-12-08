@@ -12,6 +12,7 @@ public class CreateScheduleResponse {
 	public final String endTime;
 	public final int tsDuration;
 	public String body;
+	public String accessCode;
 	int httpCode;
 	/**
 	 * http response for CreateScheduleHandler
@@ -19,7 +20,7 @@ public class CreateScheduleResponse {
 	 * @param code HTTP code to return
 	 */
 	public CreateScheduleResponse (List<TimeSlot> list, String secretCode, String startDate
-			,String startTime, String endTime, int tsDuration, int code) {
+			,String startTime, String endTime, int tsDuration,String accessCode, int code) {
 		this.list=list;
 		this.secretCode=secretCode;
 		this.startDate=startDate;
@@ -27,6 +28,7 @@ public class CreateScheduleResponse {
 		this.endTime=endTime;
 		this.tsDuration=tsDuration;
 		this.httpCode = code;
+		this.accessCode=accessCode;
 		this.body=null;
 	}
 	public CreateScheduleResponse(String body,int code) {
@@ -41,7 +43,7 @@ public class CreateScheduleResponse {
 	}
 	@Override
 	public String toString() {
-		return "CreateScheduleResponse(" + list + ","+ secretCode + ","+startDate+","+
+		return "CreateScheduleResponse(" + list + ","+ secretCode + ","+accessCode+","+startDate+","+
 	startTime+","+endTime+","+tsDuration+ ")";
 	}
 }

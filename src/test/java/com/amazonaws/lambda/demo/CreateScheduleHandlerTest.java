@@ -29,9 +29,9 @@ public class CreateScheduleHandlerTest {
     public void testCreateScheduleHandler() throws IOException {
         CreateScheduleHandler handler = new CreateScheduleHandler();
 
-        CreateScheduleRequest csr = new CreateScheduleRequest("2000-10-10"
-        		, "02:00", "2010-10-01","2010-10-11 ",
-        		"10:00","20:00",20);
+        CreateScheduleRequest csr = new CreateScheduleRequest("2019-01-20"
+        		, "02:00", "2019-01-30","2019-02-02",
+        		"10:00","16:00",60);
         String addRequest = new Gson().toJson(csr);
         String jsonRequest = new Gson().toJson(new PostRequest(addRequest));
 

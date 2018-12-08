@@ -12,10 +12,9 @@ public class Schedule {
 	public String endDate;
 	public final String startTime;
 	public final String endTime;
-
-
+	public final String accessCode;
 	public Schedule(String sId, String initDate, String initTime, String orgId, String startDate,String endDate,
-			String startTime, String endTime, int tsDuration,String secretCode) {
+			String startTime, String endTime, int tsDuration,String secretCode,String accessCode) {
 		this.initialDate=initDate;
 		this.initialTime=initTime;
 		this.organizerId=orgId;
@@ -26,5 +25,6 @@ public class Schedule {
 		this.endTime=endTime;
 		this.timeslotDuration=tsDuration;
 		this.secretCode=secretCode;
+		this.accessCode = accessCode;
 	}
 }

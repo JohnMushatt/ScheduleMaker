@@ -1,10 +1,11 @@
+package com.amazonaws.lambda.demo;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.junit.Test;
-import org.omg.CORBA_2_3.portable.OutputStream;
 
 import com.amazonaws.lambda.demo.http.PostRequest;
 import com.amazonaws.lambda.demo.http.PostResponse;

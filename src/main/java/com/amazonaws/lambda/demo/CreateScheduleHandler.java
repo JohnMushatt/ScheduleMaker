@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Random;
+import java.util.UUID;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -55,8 +56,9 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		String sId = initDate + organizerId + initTime;
 		String secretCode = sId + organizerId;
 		Schedule exist = dao.getSchedule(sId);
+		String accessCode = UUID.randomUUID().toString();
 		Schedule schedule = new Schedule(sId, initDate, initTime, organizerId, startDate, endDate, startTime, endTime,
-				tsDuration, secretCode);
+				tsDuration, secretCode,accessCode);
 		currentSchedule = schedule;
 		if (exist == null) {
 			boolean success =dao.addSchedule(schedule);
@@ -116,7 +118,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 				if (createSchedule(req.initDate, req.initTime, req.startDate, req.endDate, req.startTime, req.endTime,
 						req.tsDuration)) {
 					resp = new CreateScheduleResponse(null, currentSchedule.secretCode, currentSchedule.startDate,
-							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration, 200);
+							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration,currentSchedule.accessCode, 200);
 
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
