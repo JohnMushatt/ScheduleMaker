@@ -1,4 +1,4 @@
-package src.main.java.com.amazonaws.lambda.demo;
+package com.amazonaws.lambda.demo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,36 +12,29 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.amazonaws.lambda.db.SchedulesDAO;
+import com.amazonaws.lambda.model.Schedule;
+import com.amazonaws.lambda.model.TimeSlot;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-import edu.wpi.cs.heineman.db.ConstantsDAO;
-import edu.wpi.cs.heineman.demo.http.AllConstantsResponse;
-import edu.wpi.cs.heineman.demo.http.CreateConstantRequest;
-import edu.wpi.cs.heineman.demo.http.CreateConstantResponse;
-import edu.wpi.cs.heineman.demo.http.DeleteConstantRequest;
-import edu.wpi.cs.heineman.demo.http.DeleteConstantResponse;
-import edu.wpi.cs.heineman.model.Constant;
-import src.main.java.com.amazonaws.lambda.model.Week;
-import java.lang.*;
-
 
 public class ReviewScheduleHandler implements RequestStreamHandler {
-	
+
 	//sends me scheduleid, date
 	//return array of timeslots with array of attributes
-	
+
 	public LambdaLogger logger = null;
 	public Schedule schedule;
-	
+
 	/*public double loadWeek(String arg) throws Exception {
 		double id = 0;
 		id = loadScheduleFromRDS(arg);
 		return id;
 	}
-	
+
 	double loadScheduleFromRDS(String arg) throws Exception {
 		if (logger != null) { logger.log("in loadValue"); }
 		Schedule dao = new ScheduleDAO();
@@ -49,14 +42,14 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 		return w.wId;
 	}
 	*/
-	
+
 	List<TimeSlot> getTimeSlots(String scheduleId, String date) throws Exception{
 		if(logger != null) { logger.log("getting timeslots in week");}
 		SchedulesDAO dao = new SchedulesDAO();
-	
+
 		return dao.getTimeSlotsInWeek(scheduleId, date);
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -66,12 +59,12 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 		headerJson.put("Content-Type", "application/json");  // not sure if needed anymore?
 		headerJson.put("Access-Control-Allow-Methods", "DELETE,GET,POST,OPTIONS");
 	    headerJson.put("Access-Control-Allow-Origin",  "*");
-	        
+
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
 		ReviewScheduleResponse response = null;
-		
+
 		// extract body from incoming HTTP DELETE request. If any error, then return 422 error
 		String body;
 		boolean processed = false;
@@ -96,7 +89,7 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 		if (!processed) {
 			ReviewScheduleRequest req = new Gson().fromJson(body, ReviewScheduleRequest.class);
 			logger.log(req.toString());
-			
+
 			ReviewScheduleResponse resp;
 			try {
 				String scheduleId = req.scheduleId;
@@ -106,36 +99,34 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 			} catch (Exception e) {
 				resp = new ReviewScheduleResponse(403);
 			}
-			
+
 			// compute proper response
-	        responseJson.put("body", new Gson().toJson(resp));  
+	        responseJson.put("body", new Gson().toJson(resp));
 		}
-		
+
         logger.log("end result:" + responseJson.toJSONString());
         logger.log(responseJson.toJSONString());
         OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
-        writer.write(responseJson.toJSONString());  
+        writer.write(responseJson.toJSONString());
         writer.close();
 	}
 }
-}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

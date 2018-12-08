@@ -21,7 +21,12 @@ public class SchedulesDAO {
 			conn = null;
 		}
 	}
-
+	/**
+	 *
+	 * @param scheduleId
+	 * @return
+	 * @throws Exception
+	 */
 	public Schedule getSchedule(String scheduleId) throws Exception {
 		try {
 			Schedule schedule = null;
@@ -139,6 +144,12 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Fill TimeSlot table after a new schedule has been created
+	 * @param schedule Schedule to add time slots for
+	 * @return True if successfully added time slots
+	 * @throws Exception
+	 */
 	public boolean addTimeSlots(Schedule schedule) throws Exception {
 		try {
 			// Start date
