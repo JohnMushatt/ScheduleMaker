@@ -5,6 +5,7 @@
 <script type='text/javascript' src='../scheduleView.js'></script>
 <script type='text/javascript' src='../timeslots.js'></script>
 <script type='text/javascript' src='../delete.js'></script>
+<script type='text/javascript' src='../search.js'></script>
 
 <STYLE>
 body {
@@ -21,7 +22,7 @@ button {
 }
 
 th {
-	background: #ffecb4;
+	background: #f4a127;
 	bordercolor: white
 }
 
@@ -33,7 +34,7 @@ tr, th, td {
 }
 
 td {
-	background-color: ivory
+	background-color: #ffecb4;
 }
 
 .side {
@@ -57,20 +58,27 @@ td {
 <h1>Scheduler</h1>
 <center>
 	<input type="button" value="Create Schedule" onClick="JavaScript:handleCreateClick(this)">
-	 <input type="button" value="Find Week" onClick="nothing"> 
-		<input type="button" value="Extend Date" onClick="nothing"> 
-		<input type="button" value="Delete Schedule" onClick="JavaScript:handleDeleteScheduleClick(this)">
+	<input type="button" value="Find Schedule" onClick="JavaScript:handleFindScheduleClick()">
+	 <input type="button" value="Find Week" onClick="JavaScript:handleFindWeekClick(this)"> 
+		<input type="button" value="Extend Date" onClick="JavaScript:handleExtendDateClick(this)"> 
+		<input type="button" value="Delete Schedule" onClick="JavaScript:handleDeleteScheduleClick()">
 </center>
 
 <div class="side">
 	<form name="createScheduleForm" method="post" name="createSchedule">
 		<p>Schedule Parameters</p>
-		Start Date<input name="startDate" value="ex. yyyy-mm-dd" /> End Date<input
-			name="endDate" value="ex. yyyy-mm-dd" /> Start Time<input
-			name="startTime" value="ex. hh:ss" />
+		Start Date<input  type="date" name="startDate" value="2018-01-01" /> End Date<input  type="date"
+			name="endDate" value="2018-01-01" /> Start Time<input type="time"
+			name="startTime" />
 		<p>
-			End Time<input name="endTime" value="ex. hh:ss" /> Time Slot
-			Duration <input name="slotDuration" value="ex. 15" />
+			End Time<input type="time" name="endTime" /> Time Slot
+			Duration <select name="slotDuration">
+  <option value="10">10 Minutes</option>
+  <option value="15">15 Minutes</option>
+  <option value="20">20 Minutes</option>
+  <option value="30">30 Minutes</option>
+  <option value="60">60 Minutes</option>
+</select>
 		</p>
 		<input type="button" value="Create Schedule"
 			onClick="JavaScript:handleCreateClick(this)">
@@ -78,12 +86,12 @@ td {
 
 	<form name="findForm" method="get" name="findWeek">
 		<p>Find Week</p>
-		Date <input name="week" value="" />
+		Date <input type="date" name="week" value="" />
 	</form>
 
 	<form name="modifyForm" method="post" name="modifySchedule">
 		<p>Extend Date</p>
-		New Start Date <input name="startDate" value="" /> New End Date <input
+		New Start Date <input type="date" name="startDate" value="" /> New End Date <input type="date"
 			name="endDate" value="" />
 	</form>
 
@@ -95,9 +103,10 @@ td {
 
 <button onclick="Javascript:displayOrgSchedule()">GO</button>
 </div>
+
 <div class="side" id="table">
 
 
-	</table>
+	<!-- </table> -->
 </div>
 </html>

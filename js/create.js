@@ -3,13 +3,22 @@ function processCreateResponse(result) {
 	  // contents dynamically via javascript
 	  console.log("result:" + result);
 	  var js = JSON.parse(result);
-	  var code = js.secretcode;
-	  console.log(code);
-
-	  var httpResult = js["response"];
+	  //var js = JSON.parse('{"secretCode":"2018-12-08420514:404205","startDate":"2018-01-01","startTime":"10:00","endTime":"14:00","tsDuration":30,"accessCode":"c5b5fa14-6419-43ec-8d34-22be076bd18a","httpCode":200}');
+	  var responseCode = js.httpCode;
+	  if(responseCode == 200){
+	  var secretCode = js.secretCode;
+	  var accessCode = js.accessCode;
+	  console.log(secretCode);
+	  alert("This is your code to access the Schedule. Please store it somewhere safe. " + secretCode);
+	  alert("Send this code to those who you want to schedule meetings. " + accessCode);
+	  }else{
+		  alert("Improper Input Fields. Check Again.");
+	  }
+	  
+	  //var httpResult = js["response"];
 
 	  // Update computation result
-	  document.statusForm.status.value = result;
+	 // document.statusForm.status.value = result;
 	 
 	}
 
@@ -52,7 +61,7 @@ function handleCreateClick(e){
 	data["endDate"] = endDate;
 	data["startTime"] = startTime;
 	data["endTime"] = endTime;
-	data["slotDuration"] = slotDuration;
+	data["tsDuration"] = slotDuration;
 
 	var js = JSON.stringify(data);
 	console.log("JS" + js);

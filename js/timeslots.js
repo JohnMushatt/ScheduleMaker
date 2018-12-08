@@ -4,11 +4,11 @@
 function closeSlot(data){
 	if(document.getElementById(data).innerHTML == "closed"){
 		document.getElementById(data).innerHTML  = "open";
-		document.getElementById(data).style.backgroundColor = "ivory"
+		document.getElementById(data).style.backgroundColor = "#ffecb4"
 	} else{
 		
 	document.getElementById(data).innerHTML = "closed";
-	document.getElementById(data).style.backgroundColor = "cyan"
+	document.getElementById(data).style.backgroundColor = "#e5771e"
 	}
 }
 

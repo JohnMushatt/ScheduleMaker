@@ -1,3 +1,5 @@
+
+
 function processDeleteResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -12,11 +14,11 @@ function requestDelete(val) {
    }
 }
 
-function handleDeleteScheduleClick(thing) {
-  var code = prompt("Please enter your secret code:", "Bananas");
+function handleDeleteScheduleClick() {
+  var code = prompt("Please enter your secret code:", "Oooh secret");
   
   var data = {};
-  data["secret"]
+  data["secretCode"] = code;
 
   var js = JSON.stringify(data);
   console.log("JS:" + js);
@@ -36,5 +38,5 @@ function handleDeleteScheduleClick(thing) {
     } else {
       processDeleteResponse("N/A");
     }
-  }; **/
+  }; 
 }

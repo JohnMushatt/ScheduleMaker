@@ -5,3 +5,4 @@ var add_url    = base_url + "calculator";   // POST
 var createSchedule_url = base_url + "scheduler";       // POST
 var delete_url = base_url + "constants";    // DELETE
 var list_url   = base_url + "constants";    // GET
+var searchSched_url = base_url + ""; //GET

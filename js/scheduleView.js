@@ -21,21 +21,21 @@ function displayOrgSchedule(){
 //var js = JSON.parse(result);
 
 var output ="<table ><tr><TH />";
-var dates = "04-28";
+var day1 = "04-28";
 var startTime = 1000;
 var tsd = 20;
 var hours = (1600-startTime)/100;
 var id = 'slot';
 var looper = ((hours*60)/tsd);
- 		output = output + "<th class='button'>Monday " + dates + "</th>";
-var dates = nextDay(dates);
-	output = output + "<th class='button'>Tuesday " + dates+ "</th>";
-var dates = nextDay(dates);
- 	output = output + "<th class='button'>Wednesday " + dates+ "</th>";
-var dates = nextDay(dates);
- 	output = output + "<th class='button'>Thursday " + dates + "</th>";
-var dates = nextDay(dates);
- 	output = output + "<th class='button'>Friday " + dates + "</th></tr>";
+ 		output = output + "<th class='button'>Monday " + day1 + "</th>";
+var day2 = nextDay(day1);
+	output = output + "<th class='button'>Tuesday " + day2+ "</th>";
+var day3 = nextDay(day2);
+ 	output = output + "<th class='button'>Wednesday " + day3+ "</th>";
+var day4 = nextDay(day3);
+ 	output = output + "<th class='button'>Thursday " + day4 + "</th>";
+var day5 = nextDay(day4);
+ 	output = output + "<th class='button'>Friday " + day5 + "</th></tr>";
 
  	var v =0;
  	for(var i =0; i<looper; i++){
@@ -116,7 +116,7 @@ function nextDay(date){
 			}		
 	}
 	console.log(newDate);
-	//alert(newDate);
+	//alert();
 	return newDate;
 }
 

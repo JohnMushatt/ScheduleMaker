@@ -54,3 +54,30 @@ function handleFindTimeClick(e) {
     }
   };
 }
+
+function handleFindScheduleClick() {
+	  var secretCode = prompt("Enter your secret code here:", "Oooh Secret");
+	  var data = {};
+	  data["secretCode"] = secretCode;
+
+	  var js = JSON.stringify(data);
+	  console.log("JS:" + js);
+	  var xhr = new XMLHttpRequest();
+	  xhr.open("POST", search_url, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processAddResponse(arg1, arg2, xhr.responseText);
+	    } else {
+	      processAddResponse(arg1, arg2, "N/A");
+	    }
+	  };
+	}
