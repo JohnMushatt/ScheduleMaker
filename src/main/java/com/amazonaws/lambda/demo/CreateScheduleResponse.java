@@ -8,6 +8,7 @@ public class CreateScheduleResponse {
 	public final int tsDuration;
 	public String body;
 	public String accessCode;
+	public String name;
 	int httpCode;
 	/**
 	 * http response for CreateScheduleHandler
@@ -15,7 +16,7 @@ public class CreateScheduleResponse {
 	 * @param code HTTP code to return
 	 */
 	public CreateScheduleResponse (String secretCode, String startDate
-			,String startTime, String endTime, int tsDuration,String accessCode, int code) {
+			,String startTime, String endTime, int tsDuration,String accessCode,String name, int code) {
 		this.secretCode=secretCode;
 		this.startDate=startDate;
 		this.startTime=startTime;
@@ -23,6 +24,7 @@ public class CreateScheduleResponse {
 		this.tsDuration=tsDuration;
 		this.httpCode = code;
 		this.accessCode=accessCode;
+		this.name=name;
 		this.body=null;
 	}
 	public CreateScheduleResponse(String body,int code) {
@@ -32,6 +34,7 @@ public class CreateScheduleResponse {
 		this.endTime=null;
 		this.tsDuration=0;
 		this.body=body;
+		this.name=null;
 		this.httpCode=code;
 	}
 	@Override

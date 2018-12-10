@@ -19,7 +19,7 @@ public class TestSchedulesDAO {
 	    try {
 	    	// can add it
 	    	String id = UUID.randomUUID().toString().substring(0, 20); // no more than 20 because of DB restrictions...
-	    	Schedule schedule = new Schedule("e",null,null,"testId",null,null,"8","10",20,"testCode","testAccessCode");
+	    	Schedule schedule = new Schedule("e",null,null,"testId",null,null,"8","10",20,"testCode","testAccessCode","name");
 	    	boolean b = cd.addSchedule(schedule);
 	    	System.out.println("Add Schedule: " + b);
 

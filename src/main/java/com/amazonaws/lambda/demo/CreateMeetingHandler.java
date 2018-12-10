@@ -7,12 +7,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Random;
+import java.util.UUID;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.amazonaws.lambda.db.MeetingsDAO;
+import com.amazonaws.lambda.db.TimeSlotsDAO;
 import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
@@ -39,13 +41,18 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			logger.log("in createMeeting");
 		}
 		Random r = new Random();
-		String meetingID = "" + (int)(r.nextDouble() * 10000);
-		String secretCode = scheduleID + meetingID + organizerID;
+		String meetingID = UUID.randomUUID().toString();
+		String secretCode = UUID.randomUUID().toString();
 		Meeting meeting = new Meeting(meetingID, scheduleID, organizerID, timeSlotID, participantName, secretCode);
 		MeetingsDAO dao = new MeetingsDAO();
 		Meeting exist = dao.getMeeting(meetingID);
 		currentMeeting = meeting;
-		if (exist == null) {
+		TimeSlotsDAO tsDAO = new TimeSlotsDAO();
+		//If the time slot is not closed, there is currently no meeting already booked, and there currently does not exist
+		// a time slot with the given id
+		int booked = tsDAO.getTimeSlot(timeSlotID).isBooked;
+		int open = tsDAO.getTimeSlot(timeSlotID).isOpen;
+		if ((exist == null) && (booked==0) && (open==1)) {
 			return dao.addMeeting(meeting);
 		}
 		return false;
@@ -81,7 +88,6 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			if (body == null) {
 				body = event.toJSONString(); // this is only here to make testing easier
 			}
-			logger.log("JSON request parsed!");
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
 			response = new CreateMeetingResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
@@ -96,13 +102,11 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			CreateMeetingResponse resp;
 			try {
 				if (createMeeting(req.scheduleID, req.organizerID, req.timeslotID, req.participantName)) {
-					String r = "secretCode: " + currentMeeting.secretCode + "\nstimeSlotID: "
-							+ this.currentMeeting.timeSlotID;
-					resp = new CreateMeetingResponse(r, 200);
+					resp = new CreateMeetingResponse(currentMeeting.meetingID,currentMeeting.participantName,
+							currentMeeting.secretCode);
 				} else {
 					resp = new CreateMeetingResponse(
 							"Unable to create meeting between " + req.participantName + "and " + req.organizerID, 403);
-					logger.log(resp.toString());
 
 				}
 			} catch (Exception e) {
@@ -113,8 +117,6 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			responseJson.put("body", new Gson().toJson(resp));
 		}
 
-		// responseJson.put("body", new Gson().toJson(resp));
-		// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 		logger.log("end result:" + responseJson.toJSONString());
 
 		logger.log(responseJson.toJSONString());
@@ -123,7 +125,6 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		writer.write(responseJson.toJSONString());
 		writer.close();
 
-		System.out.println("THIS IS THE JSON RESPONSE\n\n" + responseJson.toString());
 	}
 
 }

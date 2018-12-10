@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+	package com.amazonaws.lambda.demo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,12 +42,55 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 		return w.wId;
 	}
 	*/
+	/*
+	 * List<TimeSlot> list = getTimeSlots(secretCode);
+				int tsDuration = getTimeSlotDuration(secretCode);
+				String sId = getScheduleId(secretCode);
+				String startTime = getStartTime(secretCode);
+				String endTime = getEndTime(secretCode);
+				String startingDateOfWeek = getStartingDateOfWeek(secretCode);
+	 */
 
-	List<TimeSlot> getTimeSlots(String scheduleId, String date) throws Exception{
+	List<TimeSlot> getTimeSlots(String secretCode) throws Exception{
 		if(logger != null) { logger.log("getting timeslots in week");}
 		SchedulesDAO dao = new SchedulesDAO();
 
-		return dao.getTimeSlotsInWeek(scheduleId, date);
+		return dao.getTimeSlotsInWeek(secretCode);
+	}
+
+	int getTimeSlotDuration(String secretCode) throws Exception{
+		if(logger != null) { logger.log("getting timeslot duration");}
+		SchedulesDAO dao = new SchedulesDAO();
+
+		return dao.getTimeSlotDuration(secretCode);
+	}
+
+	String getScheduleId(String secretCode) throws Exception{
+		if(logger != null) { logger.log("getting schedule ID");}
+		SchedulesDAO dao = new SchedulesDAO();
+
+		return dao.getScheduleId(secretCode);
+	}
+
+	String getStartTime(String secretCode) throws Exception{
+		if(logger != null) { logger.log("getting start time");}
+		SchedulesDAO dao = new SchedulesDAO();
+
+		return dao.getStartTime(secretCode);
+	}
+
+	String getEndTime(String secretCode) throws Exception{
+		if(logger != null) { logger.log("getting end time");}
+		SchedulesDAO dao = new SchedulesDAO();
+
+		return dao.getEndTime(secretCode);
+	}
+
+	String getStartingDateOfWeek(String secretCode) throws Exception{
+		if(logger != null) { logger.log("getting starting date of the week");}
+		SchedulesDAO dao = new SchedulesDAO();
+
+		return dao.getStartingDateOfWeek(secretCode);
 	}
 
 	@Override
@@ -92,10 +135,21 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 
 			ReviewScheduleResponse resp;
 			try {
-				String scheduleId = req.scheduleId;
-				String date = req.date;
-				List<TimeSlot> list = getTimeSlots(scheduleId, date);
-				resp = new ReviewScheduleResponse(list, 200);
+				String secretCode = req.secretCode;
+				//String date = req.date;
+				List<TimeSlot> list = getTimeSlots(secretCode);
+				int tsDuration = getTimeSlotDuration(secretCode);
+				String sId = getScheduleId(secretCode);
+				String startTime = getStartTime(secretCode);
+				String endTime = getEndTime(secretCode);
+				String startingDateOfWeek = getStartingDateOfWeek(secretCode);
+
+				if(list!= null) {
+					resp = new ReviewScheduleResponse(list, tsDuration, sId, startTime, endTime, startingDateOfWeek, 200);
+				}
+				else {
+					resp = new ReviewScheduleResponse("bad input: null list", 403);
+				}
 			} catch (Exception e) {
 				resp = new ReviewScheduleResponse(403);
 			}

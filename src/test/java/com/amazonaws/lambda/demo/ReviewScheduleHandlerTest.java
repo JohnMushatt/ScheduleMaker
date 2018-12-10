@@ -1,4 +1,5 @@
 package com.amazonaws.lambda.demo;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import com.amazonaws.lambda.demo.http.PostResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
-class ReviewScheduleHandlerTest {
+public class ReviewScheduleHandlerTest {
 
     private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
     private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
@@ -24,9 +25,11 @@ class ReviewScheduleHandlerTest {
     }
 	@Test
 	public void testReviewScheduleHandler() throws IOException {
+		System.out.println("RUNNING testReviewScheduleHandler");
 		ReviewScheduleHandler handler = new ReviewScheduleHandler();
 
-		ReviewScheduleRequest csr = new ReviewScheduleRequest("1998-01-14", "123456781234567812"); //ADD SCHEDULE ID
+		ReviewScheduleRequest csr = new ReviewScheduleRequest("2000-29-11391305:58:593913"); //ScheduleId: 2000-10-10352202:00
+		//^^^ used to be 2010-10-01
 		String addRequest = new Gson().toJson(csr);
 		String jsonRequest = new Gson().toJson(new PostRequest(addRequest));
 

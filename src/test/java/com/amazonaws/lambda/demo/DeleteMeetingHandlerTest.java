@@ -8,7 +8,10 @@ import java.io.OutputStream;
 
 import org.junit.Test;
 
+import com.amazonaws.lambda.db.MeetingsDAO;
 import com.amazonaws.lambda.demo.http.PostRequest;
+import com.amazonaws.lambda.demo.http.PostResponse;
+import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
@@ -28,25 +31,23 @@ public class DeleteMeetingHandlerTest {
 
 	@Test
 	public void testDeleteMeetingHandler() throws IOException {
-		CreateMeetingHandler createHandler = new CreateMeetingHandler();
+		System.out.println("RUNNING testDeleteMeetingHandler");
+		MeetingsDAO mDAO = new MeetingsDAO();
+		try {
+		boolean b = mDAO.addMeeting(new Meeting("testID","sId","orgId","tsId","John","sCode"));
+		}
+		catch(Exception e) {
 
-		CreateMeetingRequest cmr = new CreateMeetingRequest("testScheduleID", "testOrganizerID", "testTimeSlotID",
-				"jordanSuckz");
-
-		String createMeetingRequest = new Gson().toJson(cmr);
-		String createJsonRequest = new Gson().toJson(new PostRequest(createMeetingRequest));
-		InputStream createInput = new ByteArrayInputStream(createJsonRequest.getBytes());
-		OutputStream createOutput = new ByteArrayOutputStream();
-
-		createHandler.handleRequest(createInput, createOutput, createContext("createMeeting"));
+		}
 
 		DeleteMeetingHandler deleteHandler = new DeleteMeetingHandler();
-		DeleteMeetingRequest dmr = new DeleteMeetingRequest("7365");
+		DeleteMeetingRequest dmr = new DeleteMeetingRequest("testID");
 		String deleteMeetingRequest = new Gson().toJson(dmr);
 		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
 		InputStream deleteInput = new ByteArrayInputStream(deleteJsonRequest.getBytes());
 		OutputStream deleteOutput = new ByteArrayOutputStream();
 
 		deleteHandler.handleRequest(deleteInput, deleteOutput, createContext("deleteMeeting"));
-	}
+		PostResponse post = new Gson().fromJson(deleteOutput.toString(), PostResponse.class);
+        DeleteMeetingResponse resp = new Gson().fromJson(post.body, DeleteMeetingResponse.class);	}
 }

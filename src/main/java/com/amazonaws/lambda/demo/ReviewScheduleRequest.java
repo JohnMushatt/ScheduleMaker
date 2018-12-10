@@ -2,16 +2,16 @@ package com.amazonaws.lambda.demo;
 
 public class ReviewScheduleRequest {
 
-	String date;
-	String scheduleId;
+	//String date;
+	String secretCode;
 
-    public ReviewScheduleRequest(String date, String scheduleId) {
-    	this.date=date;
-    	this.scheduleId=scheduleId;
+    public ReviewScheduleRequest(String secretCode) {
+    	//this.date=date;
+    	this.secretCode=secretCode;
     }
 
     @Override
     public String toString() {
-    	return "ReviewScheduleRequest(" + date + "," + scheduleId + "," +")";
+    	return "ReviewScheduleRequest(" + secretCode+")";
     }
 }

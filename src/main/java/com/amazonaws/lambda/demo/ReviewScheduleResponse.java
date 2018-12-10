@@ -7,10 +7,23 @@ import com.amazonaws.lambda.model.TimeSlot;
 public class ReviewScheduleResponse{
 
 	public List<TimeSlot> timeslotsInWeek;
+	public int tsDuration;
+	public String scheduleId;
+	public String startTime;
+	public String endTime;
+	public String startingDateOfWeek;
 	public int httpCode;
 	String body;
-	public ReviewScheduleResponse (List<TimeSlot> timeslotsInWeek, int code) {
+
+	//returns the schedule id, the start and end times of that schedule,
+	//the starting date of the week. The time slot duration, and then the list of time slots
+	public ReviewScheduleResponse (List<TimeSlot> timeslotsInWeek, int tsDuration, String scheduleId, String startTime, String endTime, String startingDateOfWeek, int code) {
 		this.timeslotsInWeek = timeslotsInWeek;
+		this.tsDuration = tsDuration;
+		this.scheduleId = scheduleId;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.startingDateOfWeek = startingDateOfWeek;
 		this.httpCode = code;
 		this.body=null;
 	}

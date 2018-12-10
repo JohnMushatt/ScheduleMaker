@@ -27,6 +27,7 @@ public class EditTimeSlotHandlerTest {
     }
     @Test
     public void testEditTimeSlotHandler() throws IOException {
+    	System.out.println("Running testEditTimeSlotHandler");
         EditTimeSlotHandler handler = new EditTimeSlotHandler();
         EditTimeSlotRequest etsr = new EditTimeSlotRequest("2000-29-1185905:58:59210:15");
 

@@ -46,7 +46,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 	 * @throws Exception
 	 */
 	boolean createSchedule(String initDate, String initTime, String startDate, String endDate, String startTime,
-			String endTime, int tsDuration) throws Exception {
+			String endTime, int tsDuration,String name) throws Exception {
 		if (logger != null) {
 			logger.log("in createSchedule");
 		}
@@ -58,7 +58,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		Schedule exist = dao.getSchedule(sId);
 		String accessCode = UUID.randomUUID().toString();
 		Schedule schedule = new Schedule(sId, initDate, initTime, organizerId, startDate, endDate, startTime, endTime,
-				tsDuration, secretCode,accessCode);
+				tsDuration, secretCode,accessCode,name);
 		currentSchedule = schedule;
 		if (exist == null) {
 			boolean success =dao.addSchedule(schedule);
@@ -79,7 +79,6 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 		logger = context.getLogger();
 		logger.log("Loading Java Lambda handler to create schedule");
-
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json");
 		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -116,9 +115,10 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			CreateScheduleResponse resp;
 			try {
 				if (createSchedule(req.initDate, req.initTime, req.startDate, req.endDate, req.startTime, req.endTime,
-						req.tsDuration)) {
+						req.tsDuration,req.name)) {
 					resp = new CreateScheduleResponse(currentSchedule.secretCode, currentSchedule.startDate,
-							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration,currentSchedule.accessCode, 200);
+							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration,
+							currentSchedule.accessCode,currentSchedule.name, 200);
 
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
