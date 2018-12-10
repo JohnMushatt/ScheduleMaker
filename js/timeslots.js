@@ -1,25 +1,26 @@
 /**
  * 
  */
-function closeSlot(data){
-	if(document.getElementById(data).innerHTML == "closed"){
-		document.getElementById(data).innerHTML  = "open";
-		document.getElementById(data).style.backgroundColor = "#ffecb4"
+function closeSlot(num){
+	console.log(num);
+	if(document.getElementById(num).innerHTML == "closed"){
+		document.getElementById(num).innerHTML  = "open";
+		document.getElementById(num).style.backgroundColor = "#ffecb4"
 	} else{
 		
-	document.getElementById(data).innerHTML = "closed";
-	document.getElementById(data).style.backgroundColor = "#e5771e"
+	document.getElementById(num).innerHTML = "closed";
+	document.getElementById(num).style.backgroundColor = "#e5771e"
 	}
 }
 
 function handleTimeSlotClick(val) {
 	  var data = {};
-	  data["name"] = val;
+	  data["tsId"] = val;
 
 	  var js = JSON.stringify(data);
 	  console.log("JS:" + js);
 	  var xhr = new XMLHttpRequest();
-	  xhr.open("DELETE", delete_url, true);
+	  xhr.open("POST", delete_url, true);
 
 	  // send the collected data as JSON
 	  xhr.send(js);

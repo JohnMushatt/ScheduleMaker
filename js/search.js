@@ -62,8 +62,9 @@ function handleFindScheduleClick() {
 
 	  var js = JSON.stringify(data);
 	  console.log("JS:" + js);
+	  
 	  var xhr = new XMLHttpRequest();
-	  xhr.open("POST", search_url, true);
+	  xhr.open("POST", reviewSchedule_url, true);
 
 	  // send the collected data as JSON
 	  xhr.send(js);
@@ -75,9 +76,32 @@ function handleFindScheduleClick() {
 	    
 	    if (xhr.readyState == XMLHttpRequest.DONE) {
 	      console.log ("XHR:" + xhr.responseText);
-	      processAddResponse(arg1, arg2, xhr.responseText);
+	      processFindResponse(xhr.responseText);
 	    } else {
-	      processAddResponse(arg1, arg2, "N/A");
+	      processFindResponse("N/A");
 	    }
 	  };
+	}
+
+function processFindResponse(result) {
+	  // Can grab any DIV or SPAN HTML element and can then manipulate its
+	  // contents dynamically via javascript
+	  console.log("result:" + result);
+	  var js = JSON.parse(result);
+
+	  var tsDuration = js["tsDuration"];
+	  var scheduleId = js["scheduleId"];
+	  var startTime = js["startTime"];
+	  var endTime = js["endTime"];
+	  var startDate = js["startingDateOfWeek"];
+	  var statusCode = js["httpCode"];
+	  var list = js["timeslotsInWeek"];
+	  
+	  if (statusCode == 200) {
+	    // Update computation result
+		  displayOrgSchedule(tsDuration, startTime, endTime, startDate, list);
+	  } else {
+	    var msg = js["errorMessage"];
+	    alert("Schedule probably doesn't exist.");
+	  }
 	}

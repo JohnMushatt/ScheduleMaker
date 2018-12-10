@@ -53,7 +53,8 @@ function handleCreateClick(e){
 	var startTime = form.startTime.value;
 	var endTime = form.endTime.value;
 	var slotDuration = form.slotDuration.value;
-
+	var name = form.name.value;
+	
 	var data = {};
 	data["initDate"] = createDate;
 	data["initTime"] = createTime;
@@ -62,7 +63,8 @@ function handleCreateClick(e){
 	data["startTime"] = startTime;
 	data["endTime"] = endTime;
 	data["tsDuration"] = slotDuration;
-
+	data["name"] = name;
+	
 	var js = JSON.stringify(data);
 	console.log("JS" + js);
 

@@ -16,16 +16,18 @@ function refreshScheduleView(){
 	  };
 	}
 
-function displayOrgSchedule(){
+function displayOrgSchedule(tsd, startTime, endTime, startDate, list){
 	var tableData = document.getElementById('table');
 //var js = JSON.parse(result);
 
 var output ="<table ><tr><TH />";
-var day1 = "04-28";
-var startTime = 1000;
-var tsd = 20;
-var hours = (1600-startTime)/100;
-var id = 'slot';
+var day1 = startDate.substr(5,10);
+//var startTime = 1000;
+//var tsd = 20;
+var startTime = parseInt(startTime.substr(0,2)+startTime.substr(3,4));
+var endTime = parseInt(endTime.substr(0,2)+endTime.substr(3,4));
+var hours = (endTime-startTime)/100;
+//var id = 'slot';
 var looper = ((hours*60)/tsd);
  		output = output + "<th class='button'>Monday " + day1 + "</th>";
 var day2 = nextDay(day1);
@@ -37,13 +39,25 @@ var day4 = nextDay(day3);
 var day5 = nextDay(day4);
  	output = output + "<th class='button'>Friday " + day5 + "</th></tr>";
 
- 	var v =0;
- 	for(var i =0; i<looper; i++){
+ 	var v = 0;
+ 	var i = 0;
+ 	for(i =0; i<looper; i++){
  		
  		output = output + "<tr> <th class='button'>" + startTime.toString().substr(0,2)+":"+startTime.toString().substr(2,3)+ "</th>";
- 		for(var k=0; k<5; k++){
- 			output = output + "<td class='button' id="+v+" onclick='javascript:closeSlot("+v+")'>open</td>";
- 			console.log(output);
+ 		var k = 0;
+ 		for(k=0; k<5; k++){
+ 			var slot = list[v];
+ 			var id = slot["timeSlotID"];
+ 			console.log()
+ 			var stringId = String(id);
+ 			console.log("this is the id" + stringId);
+ 			var isopen = slot["isOpen"];
+ 			if(isopen == 1){
+ 			output = output + "<td class='button' id='"+stringId+"' onclick='javascript:closeSlot("+'"'+stringId+'"'+")'>open</td>";
+ 			//console.log(output);
+ 			} else{
+ 				output = output + "<td class='button' background-color='#e5771e' id='"+stringId+"' onclick='javascript:closeSlot("+stringId+")'>closed</td>";
+ 			}
  			v++;
  		}
  		output = output + "</tr>"
@@ -57,6 +71,7 @@ var day5 = nextDay(day4);
  	
  	
 output = output + "</table>";
+console.log(output);
  	tableData.innerHTML = output;
 }
 
