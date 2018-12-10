@@ -1,4 +1,5 @@
 package com.amazonaws.lambda.demo;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,11 +13,10 @@ import com.amazonaws.lambda.demo.http.PostResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
-
 /**
  * A simple test harness for locally invoking your Lambda function handler.
  */
-public class CreateScheduleHandlerTest {
+public class EditTimeSlotHandlerTest {
 
     private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
     private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
@@ -26,21 +26,22 @@ public class CreateScheduleHandlerTest {
         return ctx;
     }
     @Test
-    public void testCreateScheduleHandler() throws IOException {
-        CreateScheduleHandler handler = new CreateScheduleHandler();
+    public void testEditTimeSlotHandler() throws IOException {
+        EditTimeSlotHandler handler = new EditTimeSlotHandler();
+        EditTimeSlotRequest etsr = new EditTimeSlotRequest("2000-29-1185905:58:59210:15");
 
-        CreateScheduleRequest csr = new CreateScheduleRequest("2017-01-20"
-        		, "02:00", "2018-01-01","2018-01-05",
-        		"10:00","16:00",60);
-        String addRequest = new Gson().toJson(csr);
+        String addRequest = new Gson().toJson(etsr);
         String jsonRequest = new Gson().toJson(new PostRequest(addRequest));
 
-        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
-        OutputStream output = new ByteArrayOutputStream();
 
-        handler.handleRequest(input, output, createContext("createSchedule"));
+
+        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+
+        OutputStream output = new ByteArrayOutputStream();
+        handler.handleRequest(input, output, createContext("editTimeSlot"));
 
         PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
-        CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+        EditTimeSlotResponse  resp = new Gson().fromJson(post.body, EditTimeSlotResponse.class);
+
     }
 }

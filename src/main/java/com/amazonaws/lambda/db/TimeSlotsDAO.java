@@ -54,6 +54,34 @@ public class TimeSlotsDAO {
 
 		}
 	}
+	public boolean editTimeSlot(String timeSlotID) throws Exception{
+
+		try {
+			if(this.getTimeSlot(timeSlotID).isOpen==1) {
+				PreparedStatement ps = conn.prepareStatement("UPDATE TimeSlots SET isOpen=? WHERE tsId=?");
+				ps.setInt(1, 0);
+				ps.setString(2, timeSlotID);
+				int numAffected = ps.executeUpdate();
+
+				ps.close();
+				return(numAffected==1);
+			}
+			else {
+				PreparedStatement ps = conn.prepareStatement("UPDATE TimeSlots SET isOpen=? WHERE tsId=?");
+				ps.setInt(1, 1);
+				ps.setString(2, timeSlotID);
+				int numAffected = ps.executeUpdate();
+
+				ps.close();
+				return(numAffected==1);
+			}
+
+
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to close time slot: " + e.getMessage());
+		}
+	}
 
 	TimeSlot generateTimeSlot(ResultSet resultSet) throws Exception {
 		String timeSlotID = resultSet.getString("tsId");
@@ -113,7 +141,6 @@ public class TimeSlotsDAO {
 			ps.setString(8, timeSlot.date);
 			ps.execute();
 			System.out.println("Succesfully added time slot: startTime= " + timeSlot.startTime + "\tendTime= " + timeSlot.endTime + "\tdate= " + timeSlot.date);
-			;
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

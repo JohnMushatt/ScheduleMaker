@@ -30,7 +30,6 @@ public class DatabaseUtil {
 		try {
 			System.out.println("start connecting......");
 			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("" +jdbcTag + rdsMySqlDatabaseUrl + ":" + rdsMySqlDatabasePort + "/" + dbName + multiQueries +dbUsername+	dbPassword);
 			conn = DriverManager.getConnection(
 					jdbcTag + rdsMySqlDatabaseUrl + ":" + rdsMySqlDatabasePort + "/" + dbName + multiQueries,
 					dbUsername,

@@ -1,11 +1,6 @@
 package com.amazonaws.lambda.demo;
 
-import java.util.List;
-
-import com.amazonaws.lambda.model.TimeSlot;
-
 public class CreateScheduleResponse {
-	public final List<TimeSlot> list;
 	public final String secretCode;
 	public final String startDate;
 	public final String startTime;
@@ -19,9 +14,8 @@ public class CreateScheduleResponse {
 	 * @param body JSON body to return to web
 	 * @param code HTTP code to return
 	 */
-	public CreateScheduleResponse (List<TimeSlot> list, String secretCode, String startDate
+	public CreateScheduleResponse (String secretCode, String startDate
 			,String startTime, String endTime, int tsDuration,String accessCode, int code) {
-		this.list=list;
 		this.secretCode=secretCode;
 		this.startDate=startDate;
 		this.startTime=startTime;
@@ -32,7 +26,6 @@ public class CreateScheduleResponse {
 		this.body=null;
 	}
 	public CreateScheduleResponse(String body,int code) {
-		this.list=null;
 		this.secretCode=null;
 		this.startDate=null;
 		this.startTime=null;
@@ -43,7 +36,7 @@ public class CreateScheduleResponse {
 	}
 	@Override
 	public String toString() {
-		return "CreateScheduleResponse(" + list + ","+ secretCode + ","+accessCode+","+startDate+","+
+		return "CreateScheduleResponse("+secretCode + ","+accessCode+","+startDate+","+
 	startTime+","+endTime+","+tsDuration+ ")";
 	}
 }

@@ -38,9 +38,9 @@ public class TestSchedulesDAO {
 	    SchedulesDAO cd = new SchedulesDAO();
 	    try {
 	    	Schedule c = cd.getSchedule("e");
-	    	System.out.println("constant " + c.scheduleId);
+	    	System.out.println("Schedule " + c.scheduleId);
 	    } catch (Exception e) {
-	    	fail ("didn't work:" + e.getMessage());
+	    	fail ("didn't work: " + e.getMessage());
 	    }
 	}
 }

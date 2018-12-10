@@ -67,7 +67,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			}
 			return success;
 		} else {
-			return dao.updateSchedule(schedule);
+			return dao.updateSchedule(schedule.scheduleId);
 		}
 	}
 
@@ -117,12 +117,12 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			try {
 				if (createSchedule(req.initDate, req.initTime, req.startDate, req.endDate, req.startTime, req.endTime,
 						req.tsDuration)) {
-					resp = new CreateScheduleResponse(null, currentSchedule.secretCode, currentSchedule.startDate,
+					resp = new CreateScheduleResponse(currentSchedule.secretCode, currentSchedule.startDate,
 							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration,currentSchedule.accessCode, 200);
 
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
-					logger.log(resp.toString());
+					//logger.log(resp.toString());
 
 				}
 			} catch (Exception e) {

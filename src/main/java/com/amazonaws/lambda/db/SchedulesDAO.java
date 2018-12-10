@@ -13,7 +13,9 @@ import com.amazonaws.lambda.model.TimeSlot;
 
 public class SchedulesDAO {
 	java.sql.Connection conn;
-
+	/**
+	 * Constructor for SchedulesDAO, establishes connection between AWS and RDS
+	 */
 	public SchedulesDAO() {
 		try {
 			conn = DatabaseUtil.connect();
@@ -22,9 +24,9 @@ public class SchedulesDAO {
 		}
 	}
 	/**
-	 *
-	 * @param scheduleId
-	 * @return
+	 * Retrieves  a schedules from the given id
+	 * @param scheduleId String id to search for in the db
+	 * @return	Schedule from the db
 	 * @throws Exception
 	 */
 	public Schedule getSchedule(String scheduleId) throws Exception {
@@ -49,7 +51,12 @@ public class SchedulesDAO {
 		}
 
 	}
-
+	/**
+	 * Delete schedule with the given id
+	 * @param scheduleId String id of the schedule
+	 * @return True if successfully deleted, false if not
+	 * @throws Exception
+	 */
 	public boolean deleteSchedule(String scheduleId) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE sId = ?;");
@@ -63,12 +70,19 @@ public class SchedulesDAO {
 
 		}
 	}
-
-	public boolean updateSchedule(Schedule schedule) throws Exception {
+	/**
+	 * Updates the schedule such as start date end date
+	 * @param schedule	Schedule to update
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean updateSchedule(String scheduleID) throws Exception {
 		try {
+			Schedule s = getSchedule(scheduleID);
+
 			PreparedStatement ps = conn.prepareStatement("UPDATE Schedules SET (startDate,endDate) values(?,?);");
-			ps.setString(1, schedule.startDate);
-			ps.setString(2, schedule.endDate);
+			ps.setString(1, s.startDate);
+			ps.setString(2, s .endDate);
 
 			int numAffected = ps.executeUpdate();
 
@@ -195,13 +209,13 @@ public class SchedulesDAO {
 			 * instant in time represented by this Date object, as interpreted in the local
 			 * time zone.
 			 */
-			Date currentDateObject = new Date(startYearVal, startMonthVal-1, startDayVal);
+			Date currentDateObject = new Date(startYearVal-1900, startMonthVal-1, startDayVal);
 			Random r = new Random();
 			String currentTime = startTime;
 			TimeSlotsDAO tsDAO = new TimeSlotsDAO();
 			Time currentTimeObject = new Time(startHour, startMin, 00);
 			Time endTimeObject = new Time(endHour, endMin, 00);
-			Date endDateObject = new Date(endYearVal, endMonthVal-1, endDayVal);
+			Date endDateObject = new Date(endYearVal-1900, endMonthVal-1, endDayVal);
 			// Build time slots for schedule
 			int day=1;
 			String id = schedule.scheduleId;
@@ -214,6 +228,7 @@ public class SchedulesDAO {
 
 					// Get week day of the date
 					int weekDay = currentDateObject.getDay();
+					System.out.println(weekDay);
 					// Check if it not satuday or sunday
 					while (weekDay == 0 || weekDay == 6) {
 						// if it is increment, Date object takes care of updating the date correctly
