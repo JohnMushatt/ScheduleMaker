@@ -28,7 +28,7 @@ public class ReviewScheduleHandlerTest {
 		System.out.println("RUNNING testReviewScheduleHandler");
 		ReviewScheduleHandler handler = new ReviewScheduleHandler();
 
-		ReviewScheduleRequest csr = new ReviewScheduleRequest("2000-29-11391305:58:593913"); //ScheduleId: 2000-10-10352202:00
+		ReviewScheduleRequest csr = new ReviewScheduleRequest("11e64d2acee242e7b8db2e19ee69256c"); //ScheduleId: 2000-10-10352202:00
 		//^^^ used to be 2010-10-01
 		String addRequest = new Gson().toJson(csr);
 		String jsonRequest = new Gson().toJson(new PostRequest(addRequest));

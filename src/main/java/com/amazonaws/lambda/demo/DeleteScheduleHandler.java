@@ -11,9 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.amazonaws.lambda.db.MeetingsDAO;
 import com.amazonaws.lambda.db.SchedulesDAO;
-import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.lambda.model.Schedule;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
@@ -28,7 +26,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 
     	logger = context.getLogger();
 		logger.log("Loading Java Lambda handler to create schedule");
-		
+
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json");
 		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -37,7 +35,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 		DeleteScheduleResponse response = null;
-		
+
 		String body;
 		boolean processed = false;
 
@@ -65,28 +63,18 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			SchedulesDAO dao = new SchedulesDAO();
 			DeleteScheduleResponse resp;
 			try {
-				if (dao.deleteSchedule(req.scheduleId)) {
-					resp = new DeleteScheduleResponse("scheduleID: " + currentSchedule.scheduleId, 200);
-
-					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-					logger.log("JSON Response updated");
-
+				if (dao.deleteSchedule(req.secretCode)) {
+					resp = new DeleteScheduleResponse(req.secretCode);
 				} else {
-					resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.scheduleId, 403);
-					logger.log(resp.toString());
-					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-					logger.log("JSON Response updated");
+					resp = new DeleteScheduleResponse("Unable to delete Schedule: "+req.secretCode, 403);
 
 				}
 			} catch (Exception e) {
-				resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.scheduleId, 403);
-				// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
-				logger.log("JSON Response updated");
-
+				resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.secretCode, 403);
 			}
 			responseJson.put("body", new Gson().toJson(resp));
 		}
-		
+
 		// responseJson.put("body", new Gson().toJson(resp));
 		// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 		logger.log("end result:" + responseJson.toJSONString());
