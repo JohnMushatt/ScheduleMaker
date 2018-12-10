@@ -8,10 +8,8 @@ import java.io.OutputStream;
 
 import org.junit.Test;
 
-import com.amazonaws.lambda.db.TimeSlotsDAO;
 import com.amazonaws.lambda.demo.http.PostRequest;
 import com.amazonaws.lambda.demo.http.PostResponse;
-import com.amazonaws.lambda.model.TimeSlot;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
@@ -34,15 +32,9 @@ public class CreateMeetingHandlerTest {
 		System.out.println("RUNNING TestCreateMeetingHandler");
 		CreateMeetingHandler handler = new CreateMeetingHandler();
 
-		CreateMeetingRequest cmr = new CreateMeetingRequest("testScheduleID", "testOrganizerID", "testTimeSlotID",
-				 "jordanSuckz");
-		TimeSlotsDAO tsDAO = new TimeSlotsDAO();
-		try {
-		tsDAO.addTimeSlot(new TimeSlot("testTimeSlotID",1,"10:00","12:00",0,2,"testScheduleID","2000-02-02"));
-		}
-		catch(Exception e) {
+		CreateMeetingRequest cmr = new CreateMeetingRequest("8ea7a3625d00403582a3b1ec59832899", "a03ee63cb6c14989894fddfe9dcf763a", "42c8335f42ec4f7eae3717282cd4626c",
+				 "John");
 
-		}
 		String meetingRequest = new Gson().toJson(cmr);
 		String jsonRequest = new Gson().toJson(new PostRequest(meetingRequest));
 		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());

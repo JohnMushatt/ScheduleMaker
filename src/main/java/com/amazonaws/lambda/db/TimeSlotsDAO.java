@@ -82,7 +82,34 @@ public class TimeSlotsDAO {
 			throw new Exception("Failed to close time slot: " + e.getMessage());
 		}
 	}
+	public boolean updateBooked(String timeSlotID) throws Exception{
 
+		try {
+			if(this.getTimeSlot(timeSlotID).isBooked==1) {
+				PreparedStatement ps = conn.prepareStatement("UPDATE TimeSlots SET isBooked=? WHERE tsId=?");
+				ps.setInt(1, 0);
+				ps.setString(2, timeSlotID);
+				int numAffected = ps.executeUpdate();
+
+				ps.close();
+				return(numAffected==1);
+			}
+			else {
+				PreparedStatement ps = conn.prepareStatement("UPDATE TimeSlots SET isBooked=? WHERE tsId=?");
+				ps.setInt(1, 1);
+				ps.setString(2, timeSlotID);
+				int numAffected = ps.executeUpdate();
+
+				ps.close();
+				return(numAffected==1);
+			}
+
+
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to close time slot: " + e.getMessage());
+		}
+	}
 	TimeSlot generateTimeSlot(ResultSet resultSet) throws Exception {
 		String timeSlotID = resultSet.getString("tsId");
 		int isOpen = resultSet.getInt("isOpen");

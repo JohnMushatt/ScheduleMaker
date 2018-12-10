@@ -72,7 +72,8 @@ public class EditTimeSlotHandler implements RequestStreamHandler {
 			EditTimeSlotResponse resp;
 			try {
 				if (editTimeSlot(req.timeSlotID)) {
-					resp = new EditTimeSlotResponse(1,200);
+					TimeSlotsDAO t = new TimeSlotsDAO();
+					resp = new EditTimeSlotResponse(t.getTimeSlot(req.timeSlotID).isOpen,200);
 
 				} else {
 					resp = new EditTimeSlotResponse("Unable to edit time slot: " + req.timeSlotID, 403);

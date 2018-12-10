@@ -8,10 +8,8 @@ import java.io.OutputStream;
 
 import org.junit.Test;
 
-import com.amazonaws.lambda.db.MeetingsDAO;
 import com.amazonaws.lambda.demo.http.PostRequest;
 import com.amazonaws.lambda.demo.http.PostResponse;
-import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
@@ -32,16 +30,9 @@ public class DeleteMeetingHandlerTest {
 	@Test
 	public void testDeleteMeetingHandler() throws IOException {
 		System.out.println("RUNNING testDeleteMeetingHandler");
-		MeetingsDAO mDAO = new MeetingsDAO();
-		try {
-		boolean b = mDAO.addMeeting(new Meeting("testID","sId","orgId","tsId","John","sCode"));
-		}
-		catch(Exception e) {
-
-		}
 
 		DeleteMeetingHandler deleteHandler = new DeleteMeetingHandler();
-		DeleteMeetingRequest dmr = new DeleteMeetingRequest("testID");
+		DeleteMeetingRequest dmr = new DeleteMeetingRequest("3d6f11cab6014911b14bab21e4628543");
 		String deleteMeetingRequest = new Gson().toJson(dmr);
 		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
 		InputStream deleteInput = new ByteArrayInputStream(deleteJsonRequest.getBytes());

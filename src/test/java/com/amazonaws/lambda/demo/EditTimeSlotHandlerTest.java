@@ -1,5 +1,7 @@
 package com.amazonaws.lambda.demo;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,7 +31,7 @@ public class EditTimeSlotHandlerTest {
     public void testEditTimeSlotHandler() throws IOException {
     	System.out.println("Running testEditTimeSlotHandler");
         EditTimeSlotHandler handler = new EditTimeSlotHandler();
-        EditTimeSlotRequest etsr = new EditTimeSlotRequest("2000-29-1185905:58:59210:15");
+        EditTimeSlotRequest etsr = new EditTimeSlotRequest("c0712e0a3cd14f9880524d7d55c48f67");
 
         String addRequest = new Gson().toJson(etsr);
         String jsonRequest = new Gson().toJson(new PostRequest(addRequest));
@@ -43,6 +45,6 @@ public class EditTimeSlotHandlerTest {
 
         PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
         EditTimeSlotResponse  resp = new Gson().fromJson(post.body, EditTimeSlotResponse.class);
-
+        assertTrue(resp.isOpen==0);
     }
 }

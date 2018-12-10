@@ -46,23 +46,31 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 	 * @throws Exception
 	 */
 	boolean createSchedule(String initDate, String initTime, String startDate, String endDate, String startTime,
-			String endTime, int tsDuration,String name) throws Exception {
+			String endTime, int tsDuration, String name) throws Exception {
 		if (logger != null) {
 			logger.log("in createSchedule");
 		}
 		SchedulesDAO dao = new SchedulesDAO();
 		Random r = new Random();
-		String organizerId = "" + (int) (r.nextDouble() * 10000);
-		String sId = initDate + organizerId + initTime;
-		String secretCode = sId + organizerId;
+		String organizerId = UUID.randomUUID().toString();
+		organizerId = organizerId.substring(0, 8) + organizerId.substring(9, 13) + organizerId.substring(14, 18)
+				+ organizerId.substring(19, 23) + organizerId.substring(24);
+		String sId = UUID.randomUUID().toString();
+		sId =  sId.substring(0, 8) + sId.substring(9, 13) + sId.substring(14, 18)
+		+ sId.substring(19, 23) + sId.substring(24);
+		String secretCode = UUID.randomUUID().toString();
+		secretCode = secretCode.substring(0, 8) + secretCode.substring(9, 13) + secretCode.substring(14, 18)
+				+ secretCode.substring(19, 23) + secretCode.substring(24);
 		Schedule exist = dao.getSchedule(sId);
 		String accessCode = UUID.randomUUID().toString();
+		accessCode= accessCode.substring(0, 8) + accessCode.substring(9, 13) + accessCode.substring(14, 18)
+		+ accessCode.substring(19, 23) + accessCode.substring(24);
 		Schedule schedule = new Schedule(sId, initDate, initTime, organizerId, startDate, endDate, startTime, endTime,
-				tsDuration, secretCode,accessCode,name);
+				tsDuration, secretCode, accessCode, name);
 		currentSchedule = schedule;
 		if (exist == null) {
-			boolean success =dao.addSchedule(schedule);
-			if(success) {
+			boolean success = dao.addSchedule(schedule);
+			if (success) {
 				dao.addTimeSlots(schedule);
 			}
 			return success;
@@ -115,14 +123,14 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			CreateScheduleResponse resp;
 			try {
 				if (createSchedule(req.initDate, req.initTime, req.startDate, req.endDate, req.startTime, req.endTime,
-						req.tsDuration,req.name)) {
+						req.tsDuration, req.name)) {
 					resp = new CreateScheduleResponse(currentSchedule.secretCode, currentSchedule.startDate,
 							currentSchedule.startTime, currentSchedule.endTime, currentSchedule.timeslotDuration,
-							currentSchedule.accessCode,currentSchedule.name, 200);
+							currentSchedule.accessCode, currentSchedule.name, 200);
 
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.initDate, 403);
-					//logger.log(resp.toString());
+					// logger.log(resp.toString());
 
 				}
 			} catch (Exception e) {
@@ -133,7 +141,6 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		}
 
 		logger.log("end result:" + responseJson.toJSONString());
-
 
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
 		writer.write(responseJson.toJSONString());

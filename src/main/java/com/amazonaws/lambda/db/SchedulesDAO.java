@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import org.joda.time.LocalDate;
 
@@ -488,13 +489,11 @@ public class SchedulesDAO {
 			LocalDate endLocalDate = new LocalDate(endYearVal,endMonthVal,endDayVal);
 			// Build time slots for schedule
 			int day = 1;
-			String id = schedule.scheduleId;
 			// If the current date is before the schedule's end date
 			while (currentLocalDate.compareTo(endLocalDate) <= 0) {
 				// If the current time is before the day's ending time
 				while (currentTimeObject.compareTo(endTimeObject) < 0) {
 					// Get random id;
-					id = schedule.scheduleId + currentLocalDate.toString();
 
 					// Get week day of the date
 					int weekDay = currentLocalDate.getDayOfWeek();
@@ -507,7 +506,9 @@ public class SchedulesDAO {
 						weekDay = currentLocalDate.getDayOfWeek();
 					}
 
-					String timeSlotID = id + currentTimeObject.toLocalTime().toString();
+					String timeSlotID = UUID.randomUUID().toString();
+					timeSlotID = timeSlotID.substring(0, 8) + timeSlotID.substring(9, 13) + timeSlotID.substring(14, 18)
+					+ timeSlotID.substring(19, 23) + timeSlotID.substring(24);
 					String nextTime = getNextTime(currentTime, startTime, endTime, tsDuration);
 					TimeSlot currentTimeSlot = new TimeSlot(timeSlotID, 1, currentTime, nextTime, 0, weekDay,
 							schedule.scheduleId, getCurrentDate(currentLocalDate.getYear(),

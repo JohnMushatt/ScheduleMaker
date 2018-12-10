@@ -42,7 +42,11 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		}
 		Random r = new Random();
 		String meetingID = UUID.randomUUID().toString();
+		meetingID= meetingID.substring(0, 8)+meetingID.substring(9,13)+meetingID.substring(14,18)+
+				meetingID.substring(19,23)+meetingID.substring(24);
 		String secretCode = UUID.randomUUID().toString();
+		secretCode = secretCode.substring(0, 8)+secretCode.substring(9,13)+secretCode.substring(14,18)+
+				secretCode.substring(19,23)+secretCode.substring(24);
 		Meeting meeting = new Meeting(meetingID, scheduleID, organizerID, timeSlotID, participantName, secretCode);
 		MeetingsDAO dao = new MeetingsDAO();
 		Meeting exist = dao.getMeeting(meetingID);
@@ -53,6 +57,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		int booked = tsDAO.getTimeSlot(timeSlotID).isBooked;
 		int open = tsDAO.getTimeSlot(timeSlotID).isOpen;
 		if ((exist == null) && (booked==0) && (open==1)) {
+			tsDAO.updateBooked(timeSlotID);
 			return dao.addMeeting(meeting);
 		}
 		return false;
@@ -106,12 +111,12 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 							currentMeeting.secretCode);
 				} else {
 					resp = new CreateMeetingResponse(
-							"Unable to create meeting between " + req.participantName + "and " + req.organizerID, 403);
+							"Unable to create meeting for " + req.participantName, 403);
 
 				}
 			} catch (Exception e) {
 				resp = new CreateMeetingResponse(
-						"Unable to create meeting between " + req.participantName+ "and " + req.organizerID, 403);
+						"Unable to create meeting for " + req.participantName, 403);
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));
