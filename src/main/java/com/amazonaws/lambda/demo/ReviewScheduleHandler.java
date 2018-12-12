@@ -1,4 +1,4 @@
-	package com.amazonaws.lambda.demo;
+package com.amazonaws.lambda.demo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.amazonaws.lambda.db.SchedulesDAO;
+import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.lambda.model.Schedule;
 import com.amazonaws.lambda.model.TimeSlot;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -57,39 +58,46 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 
 		return dao.getTimeSlotsInWeek(secretCode);
 	}
+	
+	List<Meeting> getMeetings(List<TimeSlot> times, String sId) throws Exception{
+		if(logger != null) { logger.log("getting meetings in week");}
+		SchedulesDAO dao = new SchedulesDAO();
 
+		return dao.getMeetingsInWeek(times, sId);
+	}
+	
 	int getTimeSlotDuration(String secretCode) throws Exception{
 		if(logger != null) { logger.log("getting timeslot duration");}
 		SchedulesDAO dao = new SchedulesDAO();
 
 		return dao.getTimeSlotDuration(secretCode);
 	}
-
+	
 	String getScheduleId(String secretCode) throws Exception{
 		if(logger != null) { logger.log("getting schedule ID");}
 		SchedulesDAO dao = new SchedulesDAO();
 
 		return dao.getScheduleId(secretCode);
 	}
-
+	
 	String getStartTime(String secretCode) throws Exception{
 		if(logger != null) { logger.log("getting start time");}
 		SchedulesDAO dao = new SchedulesDAO();
 
 		return dao.getStartTime(secretCode);
 	}
-
+	
 	String getEndTime(String secretCode) throws Exception{
 		if(logger != null) { logger.log("getting end time");}
 		SchedulesDAO dao = new SchedulesDAO();
 
 		return dao.getEndTime(secretCode);
 	}
-
+	
 	String getStartingDateOfWeek(String secretCode) throws Exception{
 		if(logger != null) { logger.log("getting starting date of the week");}
 		SchedulesDAO dao = new SchedulesDAO();
-
+		
 		return dao.getStartingDateOfWeek(secretCode);
 	}
 
@@ -140,13 +148,14 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 				List<TimeSlot> list = getTimeSlots(secretCode);
 				int tsDuration = getTimeSlotDuration(secretCode);
 				String sId = getScheduleId(secretCode);
+				List<Meeting> listOfMeetings = getMeetings(list, sId);
 				String startTime = getStartTime(secretCode);
 				String endTime = getEndTime(secretCode);
 				String startingDateOfWeek = getStartingDateOfWeek(secretCode);
-
+				
 				if(list!= null) {
-					resp = new ReviewScheduleResponse(list, tsDuration, sId, startTime, endTime, startingDateOfWeek, 200);
-				}
+					resp = new ReviewScheduleResponse(list, tsDuration, sId, listOfMeetings, startTime, endTime, startingDateOfWeek, 200);
+				} 
 				else {
 					resp = new ReviewScheduleResponse("bad input: null list", 403);
 				}
@@ -157,7 +166,7 @@ public class ReviewScheduleHandler implements RequestStreamHandler {
 			// compute proper response
 	        responseJson.put("body", new Gson().toJson(resp));
 		}
-
+		
         logger.log("end result:" + responseJson.toJSONString());
         logger.log(responseJson.toJSONString());
         OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");

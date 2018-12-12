@@ -32,7 +32,8 @@ public class CreateMeetingHandlerTest {
 		System.out.println("RUNNING TestCreateMeetingHandler");
 		CreateMeetingHandler handler = new CreateMeetingHandler();
 
-		CreateMeetingRequest cmr = new CreateMeetingRequest("8ea7a3625d00403582a3b1ec59832899", "a03ee63cb6c14989894fddfe9dcf763a", "42c8335f42ec4f7eae3717282cd4626c",
+		CreateMeetingRequest cmr = new CreateMeetingRequest("0a47d5001a7a4b9d89a49aa57dbdb511",
+				"0037fc38030b4d6997ba5740c53d2f35",
 				 "John");
 
 		String meetingRequest = new Gson().toJson(cmr);

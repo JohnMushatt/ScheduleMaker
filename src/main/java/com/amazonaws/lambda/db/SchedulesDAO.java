@@ -1,5 +1,4 @@
 package com.amazonaws.lambda.db;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Time;
@@ -10,6 +9,7 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 
+import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.lambda.model.Schedule;
 import com.amazonaws.lambda.model.TimeSlot;
 
@@ -76,27 +76,6 @@ public class SchedulesDAO {
 		}
 	}
 
-	public String getScheduleId(String secretCode) throws Exception{
-		try {
-			String sId = "not gotten yet";
-			PreparedStatement sIdPs = conn.prepareStatement("SELECT * FROM Schedules WHERE secretCode=?");
-			sIdPs.setString(1, secretCode);
-			ResultSet sIdResultSet = sIdPs.executeQuery();
-
-			while(sIdResultSet.next()) {
-				sId = findScheduleId(sIdResultSet);
-			}
-
-			sIdResultSet.close();
-			sIdPs.close();
-
-			return sId;
-		}
-		catch (Exception e) {
-			throw new Exception("Failed to get schedule Id");
-		}
-	}
-
 	public String getStartTime(String secretCode) throws Exception{
 		try {
 			String startTime = "startTime??????";
@@ -118,47 +97,8 @@ public class SchedulesDAO {
 		}
 	}
 
-	public String getEndTime(String secretCode) throws Exception{
-		try {
-			String endTime = "endTime??????";
-			PreparedStatement endTimePs = conn.prepareStatement("SELECT * FROM Schedules WHERE secretCode=?");
-			endTimePs.setString(1, secretCode);
-			ResultSet endTimeResultSet = endTimePs.executeQuery();
 
-			while(endTimeResultSet.next()) {
-				endTime = findEndTime(endTimeResultSet);
-			}
 
-			endTimeResultSet.close();
-			endTimePs.close();
-
-			return endTime;
-		}
-		catch (Exception e) {
-			throw new Exception("Failed to get end time");
-		}
-	}
-
-	public String getStartingDateOfWeek(String secretCode) throws Exception{
-		try {
-			String startDate = "startDate??????";
-			PreparedStatement startDatePs = conn.prepareStatement("SELECT * FROM Schedules WHERE secretCode=?");
-			startDatePs.setString(1, secretCode);
-			ResultSet startDateResultSet = startDatePs.executeQuery();
-
-			while(startDateResultSet.next()) {
-				startDate = findStartingDate(startDateResultSet);
-			}
-
-			startDateResultSet.close();
-			startDatePs.close();
-
-			return startDate;
-		}
-		catch (Exception e) {
-			throw new Exception("Failed to get start date of the week");
-		}
-	}
 
 	public List<TimeSlot> getTimeSlotsInWeek(String secretCode) throws Exception {
 
@@ -184,17 +124,17 @@ public class SchedulesDAO {
 			int m = Integer.parseInt(month);
 			int d = Integer.parseInt(day);
 
-			Date thisDate = new Date(y, m, d);
+			LocalDate thisDate = new LocalDate(y,m,d);
 			//Date firstDay = thisDate.
-			Date firstDay = new Date(y, m, d+1);
-			Date secondDay = new Date(y, m, d+2);
-			Date thirdDay = new Date(y, m, d+3);
-			Date fourthDay = new Date(y, m, d+4);
+			LocalDate firstDay = new LocalDate(y, m, d+1);
+			LocalDate secondDay = new LocalDate(y, m, d+2);
+			LocalDate thirdDay = new LocalDate(y, m, d+3);
+			LocalDate fourthDay = new LocalDate(y, m, d+4);
 
-			String firstDayString = getCurrentDate(firstDay.getYear(), firstDay.getMonth(), firstDay.getDate());
-			String secondDayString = getCurrentDate(secondDay.getYear(), secondDay.getMonth(), secondDay.getDate());
-			String thirdDayString = getCurrentDate(thirdDay.getYear(), thirdDay.getMonth(), thirdDay.getDate());
-			String fourthDayString = getCurrentDate(fourthDay.getYear(), fourthDay.getMonth(), fourthDay.getDate());
+			String firstDayString = getCurrentDate(firstDay.getYear(), firstDay.getMonthOfYear(), firstDay.getDayOfMonth());
+			String secondDayString = getCurrentDate(secondDay.getYear(), secondDay.getMonthOfYear(), secondDay.getDayOfMonth());
+			String thirdDayString = getCurrentDate(thirdDay.getYear(), thirdDay.getMonthOfYear(), thirdDay.getDayOfMonth());
+			String fourthDayString = getCurrentDate(fourthDay.getYear(), fourthDay.getMonthOfYear(), fourthDay.getDayOfMonth());
 
 			List<TimeSlot> timeslots = new ArrayList<>();
 			TimeSlotsDAO dao = new TimeSlotsDAO();
@@ -614,123 +554,105 @@ public class SchedulesDAO {
 		return date;
 	}
 
-	public List<TimeSlot> getTimeSlotsInWeek(String scheduleId, String date) throws Exception {
 
+	public String getScheduleId(String secretCode) throws Exception{
+		try {
+			String sId = "not gotten yet";
+			PreparedStatement sIdPs = conn.prepareStatement("SELECT * FROM Schedules WHERE secretCode=?");
+			sIdPs.setString(1, secretCode);
+			ResultSet sIdResultSet = sIdPs.executeQuery();
+
+			while(sIdResultSet.next()) {
+				sId = findScheduleId(sIdResultSet);
+			}
+
+			sIdResultSet.close();
+			sIdPs.close();
+
+			return sId;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get schedule Id");
+		}
+	}
+
+
+	public String getEndTime(String secretCode) throws Exception{
+		try {
+			String endTime = "endTime??????";
+			PreparedStatement endTimePs = conn.prepareStatement("SELECT * FROM Schedules WHERE secretCode=?");
+			endTimePs.setString(1, secretCode);
+			ResultSet endTimeResultSet = endTimePs.executeQuery();
+
+			while(endTimeResultSet.next()) {
+				endTime = findEndTime(endTimeResultSet);
+			}
+
+			endTimeResultSet.close();
+			endTimePs.close();
+
+			return endTime;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get end time");
+		}
+	}
+
+	public String getStartingDateOfWeek(String secretCode) throws Exception{
+		try {
+			String startDate = "startDate??????";
+			PreparedStatement startDatePs = conn.prepareStatement("SELECT * FROM Schedules WHERE secretCode=?");
+			startDatePs.setString(1, secretCode);
+			ResultSet startDateResultSet = startDatePs.executeQuery();
+
+			while(startDateResultSet.next()) {
+				startDate = findStartingDate(startDateResultSet);
+			}
+
+			startDateResultSet.close();
+			startDatePs.close();
+
+			return startDate;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get start date of the week");
+		}
+	}
+
+	public List<Meeting> getMeetingsInWeek(List<TimeSlot> times, String sId) throws Exception{
 		try {
 
-			// SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+			List<Meeting> meetings = new ArrayList<>();
+			List<String> timeSlotIds = new ArrayList<>();
+			MeetingsDAO dao = new MeetingsDAO();
 
-			String year = date.substring(0, 4);
-
-			String month = date.substring(5, 7);
-
-			String day = date.substring(8, 10);
-
-			int y = Integer.parseInt(year);
-
-			int m = Integer.parseInt(month);
-
-			int d = Integer.parseInt(day);
-
-			Date thisDate = new Date(y, m, d);
-
-			Date firstDay = new Date(y, m, d + 1);
-
-			Date secondDay = new Date(y, m, d + 2);
-
-			Date thirdDay = new Date(y, m, d + 3);
-
-			Date fourthDay = new Date(y, m, d + 4);
-
-			String firstDayString = firstDay.toString();
-
-			String secondDayString = secondDay.toString();
-
-			String thirdDayString = thirdDay.toString();
-
-			String fourthDayString = fourthDay.toString();
-
-			List<TimeSlot> timeslots = new ArrayList<>();
-
-			TimeSlotsDAO dao = new TimeSlotsDAO();
-
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
-
-			ps.setString(1, scheduleId);
-
-			ps.setString(2, date);
-
-			ResultSet resultSet = ps.executeQuery();
-
-			while (resultSet.next()) {
-
-				TimeSlot timeslot = dao.generateTimeSlot(resultSet);
-
-				timeslots.add(timeslot);
-
+			for(TimeSlot ts: times) {
+				timeSlotIds.add(ts.timeSlotID);
 			}
 
-			ps.setString(2, firstDayString);
+			for(String timeSlotID: timeSlotIds) {
+				PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE sId=? AND tsId=?;");
 
-			resultSet = ps.executeQuery();
+		        ps.setString(1, sId);
+		        ps.setString(2, timeSlotID);
+		        ResultSet resultSet = ps.executeQuery();
 
-			while (resultSet.next()) {
-
-				TimeSlot timeslot = dao.generateTimeSlot(resultSet);
-
-				timeslots.add(timeslot);
-
+		        while(resultSet.next()) {
+		        	Meeting meeting = dao.generateMeeting(resultSet);
+		        	meetings.add(meeting);
+		        }
+		        resultSet.close();
+		        ps.close();
 			}
 
-			ps.setString(2, secondDayString);
-
-			resultSet = ps.executeQuery();
-
-			while (resultSet.next()) {
-
-				TimeSlot timeslot = dao.generateTimeSlot(resultSet);
-
-				timeslots.add(timeslot);
-
-			}
-
-			ps.setString(2, thirdDayString);
-
-			resultSet = ps.executeQuery();
-
-			while (resultSet.next()) {
-
-				TimeSlot timeslot = dao.generateTimeSlot(resultSet);
-
-				timeslots.add(timeslot);
-
-			}
-
-			ps.setString(2, fourthDayString);
-
-			resultSet = ps.executeQuery();
-
-			while (resultSet.next()) {
-
-				TimeSlot timeslot = dao.generateTimeSlot(resultSet);
-
-				timeslots.add(timeslot);
-
-			}
-
-			resultSet.close();
-
-			ps.close();
-
-			return timeslots;
-
-		} catch (Exception e) {
-
-			throw new Exception("Failed to review schedule");
-
+			return meetings;
 		}
-
+		catch (Exception e) {
+			throw new Exception("Failed to get the meetings in a week");
+		}
 	}
+
+
 
 	/**
 	 * Get string form of current date
@@ -780,4 +702,253 @@ public class SchedulesDAO {
 		days = 365 * y + y / 4 - y / 100 + y / 400 + (m * 306 + 5) / 10 + (d - 1);
 		return days;
 	}
+	public List<TimeSlot> participantGetTimeSlotsInWeek(String accessCode) throws Exception {
+
+        try {
+
+        	String startDate = "no date gotten yet";
+        	PreparedStatement datePs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?");
+        	datePs.setString(1, accessCode);
+        	ResultSet dateResultSet = datePs.executeQuery();
+
+        	while(dateResultSet.next()) {
+        		startDate = findStartDate(dateResultSet);
+        	}
+        	dateResultSet.close();
+        	datePs.close();
+
+			String year = startDate.substring(0, 4);
+			String month = startDate.substring(5,7);
+			String day = startDate.substring(8,10);
+
+			int y = Integer.parseInt(year);
+			int m = Integer.parseInt(month);
+			int d = Integer.parseInt(day);
+
+			/*
+			Calendar calFirst = Calendar.getInstance();
+        	calFirst.set(y, m, d);
+        	Calendar calSecond = Calendar.getInstance();
+        	calSecond.set(y, m, d+1);
+        	Calendar calThird = Calendar.getInstance();
+        	calThird.set(y, m, d+2);
+        	Calendar calFourth = Calendar.getInstance();
+        	calFourth.set(y, m, d+3);
+        	Calendar calFifth = Calendar.getInstance();
+        	calFifth.set(y, m, d+4);
+
+        	System.out.println(calFirst.get(Calendar.YEAR) + "-" + calFirst.get(Calendar.MONTH) + "-" + calFirst.get(Calendar.DATE) );
+        	String firstDayString = getCurrentDate(calFirst.get(Calendar.YEAR), calFirst.get(Calendar.MONTH), calFirst.get(Calendar.DATE));
+        	String secondDayString = getCurrentDate(calSecond.get(Calendar.YEAR), calSecond.get(Calendar.MONTH), calSecond.get(Calendar.DATE));
+        	String thirdDayString = getCurrentDate(calThird.get(Calendar.YEAR), calThird.get(Calendar.MONTH), calThird.get(Calendar.DATE));
+        	String fourthDayString = getCurrentDate(calFourth.get(Calendar.YEAR), calFourth.get(Calendar.MONTH), calFourth.get(Calendar.DATE));
+        	String fifthDayString = getCurrentDate(calFifth.get(Calendar.YEAR), calFifth.get(Calendar.MONTH), calFifth.get(Calendar.DATE));
+			*/
+
+			LocalDate firstDay = new LocalDate(y, m, d);
+			//Date firstDay = thisDate.
+			LocalDate secondDay = new LocalDate(y, m, d+1);
+			LocalDate thirdDay = new LocalDate(y, m, d+2);
+			LocalDate fourthDay = new LocalDate(y, m, d+3);
+			LocalDate fifthDay = new LocalDate(y, m, d+4);
+
+			String firstDayString = getCurrentDate(firstDay.getYear(), firstDay.getMonthOfYear(), firstDay.getDayOfMonth());
+			String secondDayString = getCurrentDate(secondDay.getYear(), secondDay.getMonthOfYear(), secondDay.getDayOfMonth());
+			String thirdDayString = getCurrentDate(thirdDay.getYear(), thirdDay.getMonthOfYear(), thirdDay.getDayOfMonth());
+			String fourthDayString = getCurrentDate(fourthDay.getYear(), fourthDay.getMonthOfYear(), fourthDay.getDayOfMonth());
+			String fifthDayString = getCurrentDate(fifthDay.getYear(), fifthDay.getMonthOfYear(), fifthDay.getDayOfMonth());
+
+
+			List<TimeSlot> timeslots = new ArrayList<>();
+			TimeSlotsDAO dao = new TimeSlotsDAO();
+			String scheduleId = "havent checked yet";
+
+			//search for the schedule id for the schedule with the matching secret code
+			PreparedStatement schedulePs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?;");
+			schedulePs.setString(1, accessCode);
+			ResultSet scheduleResultSet = schedulePs.executeQuery();
+
+			while (scheduleResultSet.next()) {
+				scheduleId = findScheduleId(scheduleResultSet);
+            }
+			scheduleResultSet.close();
+			schedulePs.close();
+
+	        //Now search the Timeslot list for timeslots containing the same schedule id and date
+	        PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+
+	        ps.setString(1, scheduleId);
+	        ps.setString(2, firstDayString); //used to be startDate
+	        ResultSet resultSet = ps.executeQuery();
+
+	        while(resultSet.next()) {
+	        	TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+	        	timeslots.add(timeslot);
+	        }
+	        resultSet.close();
+	        ps.close();
+
+	        ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+	        ps.setString(1, scheduleId);
+	        ps.setString(2, secondDayString);
+	        resultSet = ps.executeQuery();
+
+	        while(resultSet.next()) {
+	        	TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+	        	timeslots.add(timeslot);
+	        }
+
+	        resultSet.close();
+	        ps.close();
+
+	        ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+	        ps.setString(1, scheduleId);
+	        ps.setString(2, thirdDayString);
+	        resultSet = ps.executeQuery();
+
+	        while(resultSet.next()) {
+	        	TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+	        	timeslots.add(timeslot);
+	        }
+	        resultSet.close();
+	        ps.close();
+
+	        ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+	        ps.setString(1, scheduleId);
+	        ps.setString(2, fourthDayString);
+	        resultSet = ps.executeQuery();
+
+	        while(resultSet.next()) {
+	        	TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+	        	timeslots.add(timeslot);
+	        }
+	        resultSet.close();
+	        ps.close();
+
+	        ps = conn.prepareStatement("SELECT * FROM TimeSlots WHERE sId=? AND date=?;");
+	        ps.setString(1, scheduleId);
+	        ps.setString(2, fifthDayString);
+	        resultSet = ps.executeQuery();
+
+	        while(resultSet.next()) {
+	        	TimeSlot timeslot = dao.generateTimeSlot(resultSet);
+	        	timeslots.add(timeslot);
+	        }
+	        resultSet.close();
+	        ps.close();
+
+            return timeslots;
+
+        } catch (Exception e) {
+        	throw new Exception("Failed to review schedule");
+        }
+
+    }
+
+	public int participantGetTimeSlotDuration(String accessCode) throws Exception{
+		try {
+			int tsDuration = 0;
+			PreparedStatement tsPs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?");
+			tsPs.setString(1, accessCode);
+			ResultSet tsResultSet = tsPs.executeQuery();
+
+			while(tsResultSet.next()) {
+				tsDuration = findTsDuration(tsResultSet);
+			}
+
+			tsResultSet.close();
+			tsPs.close();
+
+			return tsDuration;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get ts duration");
+		}
+	}
+
+	public String participantGetScheduleId(String accessCode) throws Exception{
+		try {
+			String sId = "not gotten yet";
+			PreparedStatement sIdPs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?");
+			sIdPs.setString(1, accessCode);
+			ResultSet sIdResultSet = sIdPs.executeQuery();
+
+			while(sIdResultSet.next()) {
+				sId = findScheduleId(sIdResultSet);
+			}
+
+			sIdResultSet.close();
+			sIdPs.close();
+
+			return sId;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get schedule Id");
+		}
+	}
+
+	public String participantGetStartTime(String accessCode) throws Exception{
+		try {
+			String startTime = "startTime??????";
+			PreparedStatement startTimePs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?");
+			startTimePs.setString(1, accessCode);
+			ResultSet startTimeResultSet = startTimePs.executeQuery();
+
+			while(startTimeResultSet.next()) {
+				startTime = findStartTime(startTimeResultSet);
+			}
+
+			startTimeResultSet.close();
+			startTimePs.close();
+
+			return startTime;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get start time");
+		}
+	}
+
+	public String participantGetEndTime(String accessCode) throws Exception{
+		try {
+			String endTime = "endTime??????";
+			PreparedStatement endTimePs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?");
+			endTimePs.setString(1, accessCode);
+			ResultSet endTimeResultSet = endTimePs.executeQuery();
+
+			while(endTimeResultSet.next()) {
+				endTime = findEndTime(endTimeResultSet);
+			}
+
+			endTimeResultSet.close();
+			endTimePs.close();
+
+			return endTime;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get end time");
+		}
+	}
+
+	public String participantGetStartingDateOfWeek(String accessCode) throws Exception{
+		try {
+			String startDate = "startDate??????";
+			PreparedStatement startDatePs = conn.prepareStatement("SELECT * FROM Schedules WHERE accessCode=?");
+			startDatePs.setString(1, accessCode);
+			ResultSet startDateResultSet = startDatePs.executeQuery();
+
+			while(startDateResultSet.next()) {
+				startDate = findStartingDate(startDateResultSet);
+			}
+
+			startDateResultSet.close();
+			startDatePs.close();
+
+			return startDate;
+		}
+		catch (Exception e) {
+			throw new Exception("Failed to get start date of the week");
+		}
+	}
 }
+
+

@@ -2,7 +2,6 @@ package com.amazonaws.lambda.demo;
 
 public class CreateMeetingRequest {
 	String scheduleID;
-	String organizerID;
 	String timeslotID;
 	String participantName;
 	/**
@@ -13,15 +12,14 @@ public class CreateMeetingRequest {
 	 * @param pID	Participant ID
 	 * @param pName	Name of the participant
 	 */
-	public CreateMeetingRequest(String scheduleID, String organizerID,String timeslotID,String participantName) {
+	public CreateMeetingRequest(String scheduleID,String timeslotID,String participantName) {
 		this.scheduleID=scheduleID;
-		this.organizerID=organizerID;
 		this.timeslotID=timeslotID;
 		this.participantName=participantName;
 	}
 
 	@Override
 	public String toString() {
-		return "CreateMeetingRequest("+this.scheduleID+","+this.organizerID+","+this.timeslotID+","+this.participantName+")";
+		return "CreateMeetingRequest("+this.scheduleID+","+this.timeslotID+","+this.participantName+")";
 	}
 }

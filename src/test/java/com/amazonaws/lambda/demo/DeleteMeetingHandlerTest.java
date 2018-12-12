@@ -32,7 +32,7 @@ public class DeleteMeetingHandlerTest {
 		System.out.println("RUNNING testDeleteMeetingHandler");
 
 		DeleteMeetingHandler deleteHandler = new DeleteMeetingHandler();
-		DeleteMeetingRequest dmr = new DeleteMeetingRequest("3d6f11cab6014911b14bab21e4628543");
+		DeleteMeetingRequest dmr = new DeleteMeetingRequest("1a1f8b2af41e4b74b3ba1214790339a5","f81a2ef39189465f9bd6e961930db198");
 		String deleteMeetingRequest = new Gson().toJson(dmr);
 		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
 		InputStream deleteInput = new ByteArrayInputStream(deleteJsonRequest.getBytes());

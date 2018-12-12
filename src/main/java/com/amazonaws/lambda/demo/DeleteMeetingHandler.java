@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.amazonaws.lambda.db.MeetingsDAO;
+import com.amazonaws.lambda.db.TimeSlotsDAO;
 import com.amazonaws.lambda.model.Meeting;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
@@ -20,7 +21,7 @@ import com.google.gson.Gson;
 public class DeleteMeetingHandler implements RequestStreamHandler {
 	LambdaLogger logger;
 	Meeting currentMeeting;
-	public boolean deleteMeeting(String meetingID) throws Exception{
+	public boolean deleteMeeting(String meetingID,String secretCode) throws Exception{
 		if(logger!=null) {
 			logger.log("in deleteMeeting");
 		}
@@ -30,7 +31,7 @@ public class DeleteMeetingHandler implements RequestStreamHandler {
 			return false;
 		}
 		else {
-			return dao.deleteMeeting(meetingID);
+			return dao.deleteMeeting(meetingID,secretCode);
 		}
 	}
 	/**
@@ -78,8 +79,10 @@ public class DeleteMeetingHandler implements RequestStreamHandler {
 			MeetingsDAO dao = new MeetingsDAO();
 			DeleteMeetingResponse resp;
 			try {
-				if (dao.deleteMeeting(req.meetingID)) {
+				if (dao.deleteMeeting(req.meetingID,req.secretCode)) {
 					resp = new DeleteMeetingResponse("meetingID: " +req.meetingID, 200);
+
+					TimeSlotsDAO ts = new TimeSlotsDAO();
 
 					// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 					logger.log("JSON Response updated");

@@ -38,23 +38,71 @@ public class MeetingsDAO {
 		}
 
 	}
-
-	public boolean deleteMeeting(String meetingID) throws Exception {
+	public String getTimeSlotID(String meetingID) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE mId = ?;");
+			Meeting meeting = null;
+
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE mId=?;");
 			ps.setString(1, meetingID);
 
-			int numAffected = ps.executeUpdate();
-			ps.close();
-			return (numAffected==1);
-		}
-		catch (Exception e){
-            throw new Exception("Failed to delete meeting: " + e.getMessage());
+			ResultSet resultSet  = ps.executeQuery();
 
+			while(resultSet.next()) {
+				meeting=generateMeeting(resultSet);
+			}
+			resultSet.close();
+			ps.close();
+			return meeting.timeSlotID;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting meeting: " + e.getMessage());
 		}
 	}
+	public boolean deleteMeeting(String meetingID,String secretCode) throws Exception {
+		if(secretCode!=null) {
+			try {
+				System.out.println("Deleting via secret code");
+				PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE secretCode = ?;");
+				ps.setString(1, secretCode);
+				String id = this.getTimeSlotID(meetingID);
+				int numAffected = ps.executeUpdate();
+				ps.close();
 
-	private Meeting generateMeeting(ResultSet resultSet) throws Exception {
+				if(numAffected==1) {
+					TimeSlotsDAO t = new TimeSlotsDAO();
+					t.updateBooked(id);
+				}
+				return (numAffected==1);
+			}
+			catch (Exception e){
+	            throw new Exception("Failed to delete meeting: " + e.getMessage());
+
+			}
+		}
+		else {
+			try {
+				PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE mId = ?;");
+				ps.setString(1, meetingID);
+				String id = this.getTimeSlotID(meetingID);
+				int numAffected = ps.executeUpdate();
+				ps.close();
+
+				if(numAffected==1) {
+					TimeSlotsDAO t = new TimeSlotsDAO();
+					t.updateBooked(id);
+				}
+				return (numAffected==1);
+			}
+			catch (Exception e){
+	            throw new Exception("Failed to delete meeting: " + e.getMessage());
+
+			}
+		}
+
+	}
+
+	Meeting generateMeeting(ResultSet resultSet) throws Exception {
 		String meetingID = resultSet.getString("mId");
 		String organizerID = resultSet.getString("orgId");
 		String timeSlotID = resultSet.getString("tsId");

@@ -12,6 +12,6 @@ public class ReviewScheduleRequest {
 
     @Override
     public String toString() {
-    	return "ReviewScheduleRequest(" + secretCode+")";
+    	return "ReviewScheduleRequest(" + secretCode + "," +")";
     }
 }

@@ -27,41 +27,59 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 
 	/**
 	 * Attempt to create meeting in database
-	 * @param	participantID ID of the participant
-	 * @param 	organizerID ID of the organizer
-	 * @param 	timeSlotID ID of the timeslot
-	 * @param 	participantName Name of the participant
-	 * @return 	True if successfully added/updated, False if it did not
+	 *
+	 * @param participantID
+	 *            ID of the participant
+	 * @param organizerID
+	 *            ID of the organizer
+	 * @param timeSlotID
+	 *            ID of the timeslot
+	 * @param participantName
+	 *            Name of the participant
+	 * @return True if successfully added/updated, False if it did not
 	 * @throws Exception
 	 */
-	private boolean createMeeting(String scheduleID, String organizerID, String timeSlotID, String participantName)
-			throws Exception {
+	private boolean createMeeting(String scheduleID, String timeSlotID, String participantName) throws Exception {
 
 		if (logger != null) {
 			logger.log("in createMeeting");
 		}
 		Random r = new Random();
 		String meetingID = UUID.randomUUID().toString();
-		meetingID= meetingID.substring(0, 8)+meetingID.substring(9,13)+meetingID.substring(14,18)+
-				meetingID.substring(19,23)+meetingID.substring(24);
+		meetingID = meetingID.substring(0, 8) + meetingID.substring(9, 13) + meetingID.substring(14, 18)
+				+ meetingID.substring(19, 23) + meetingID.substring(24);
+		String orgId = UUID.randomUUID().toString();
+		orgId = orgId.substring(0, 8) + orgId.substring(9, 13) + orgId.substring(14, 18) + orgId.substring(19, 23)
+				+ orgId.substring(24);
 		String secretCode = UUID.randomUUID().toString();
-		secretCode = secretCode.substring(0, 8)+secretCode.substring(9,13)+secretCode.substring(14,18)+
-				secretCode.substring(19,23)+secretCode.substring(24);
-		Meeting meeting = new Meeting(meetingID, scheduleID, organizerID, timeSlotID, participantName, secretCode);
+
+		secretCode = secretCode.substring(0, 8) + secretCode.substring(9, 13) + secretCode.substring(14, 18)
+				+ secretCode.substring(19, 23) + secretCode.substring(24);
+		Meeting meeting = new Meeting(meetingID, orgId, timeSlotID, participantName,scheduleID, secretCode);
 		MeetingsDAO dao = new MeetingsDAO();
 		Meeting exist = dao.getMeeting(meetingID);
 		currentMeeting = meeting;
 		TimeSlotsDAO tsDAO = new TimeSlotsDAO();
-		//If the time slot is not closed, there is currently no meeting already booked, and there currently does not exist
+
+		// If the time slot is not closed, there is currently no meeting already booked,
+		// and there currently does not exist
 		// a time slot with the given id
-		int booked = tsDAO.getTimeSlot(timeSlotID).isBooked;
-		int open = tsDAO.getTimeSlot(timeSlotID).isOpen;
-		if ((exist == null) && (booked==0) && (open==1)) {
-			tsDAO.updateBooked(timeSlotID);
-			return dao.addMeeting(meeting);
+		if (exist == null) {
+			if (tsDAO.getTimeSlot(timeSlotID) != null) {
+				int booked = tsDAO.getTimeSlot(timeSlotID).isBooked;
+				int open = tsDAO.getTimeSlot(timeSlotID).isOpen;
+
+				if ((booked == 0) && (open == 1)) {
+
+					tsDAO.updateBooked(timeSlotID);
+					return dao.addMeeting(meeting);
+				}
+			}
+			return false;
 		}
 		return false;
 	}
+
 	/**
 	 * Handles HTTP request from web
 	 */
@@ -106,17 +124,16 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 
 			CreateMeetingResponse resp;
 			try {
-				if (createMeeting(req.scheduleID, req.organizerID, req.timeslotID, req.participantName)) {
-					resp = new CreateMeetingResponse(currentMeeting.meetingID,currentMeeting.participantName,
+				if (createMeeting(req.scheduleID, req.timeslotID, req.participantName)) {
+					resp = new CreateMeetingResponse(currentMeeting.meetingID, currentMeeting.participantName,
 							currentMeeting.secretCode);
 				} else {
-					resp = new CreateMeetingResponse(
-							"Unable to create meeting for " + req.participantName, 403);
+					resp = new CreateMeetingResponse("Unable to create meeting for " + req.participantName, 403);
 
 				}
 			} catch (Exception e) {
-				resp = new CreateMeetingResponse(
-						"Unable to create meeting for " + req.participantName, 403);
+				e.printStackTrace();
+				resp = new CreateMeetingResponse("Unable to create meeting for " + req.participantName, 403);
 
 			}
 			responseJson.put("body", new Gson().toJson(resp));

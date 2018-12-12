@@ -7,7 +7,7 @@ public class Meeting {
 	public String participantName;
 	public String secretCode;
 	public String scheduleID;
-	public Meeting(String meetingID, String scheduleID,String organizerID, String timeSlotID, String participantName,String secretCode) {
+	public Meeting(String meetingID,String organizerID, String timeSlotID, String participantName,String scheduleID,String secretCode) {
 		this.meetingID = meetingID;
 		this.scheduleID=scheduleID;
 		this.organizerID = organizerID;
