@@ -80,6 +80,7 @@ public class MeetingsDAO {
 
 			}
 		}
+
 		else {
 			try {
 				PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE mId = ?;");

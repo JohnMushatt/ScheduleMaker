@@ -52,7 +52,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			logger.log("JSON request parsed!");
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new DeleteScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable to process input
+			response = new DeleteScheduleResponse(422); // unable to process input
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
@@ -64,13 +64,13 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			DeleteScheduleResponse resp;
 			try {
 				if (dao.deleteSchedule(req.secretCode)) {
-					resp = new DeleteScheduleResponse(req.secretCode);
+					resp = new DeleteScheduleResponse(200);
 				} else {
-					resp = new DeleteScheduleResponse("Unable to delete Schedule: "+req.secretCode, 403);
+					resp = new DeleteScheduleResponse(403);
 
 				}
 			} catch (Exception e) {
-				resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.secretCode, 403);
+				resp = new DeleteScheduleResponse(403);
 			}
 			responseJson.put("body", new Gson().toJson(resp));
 		}

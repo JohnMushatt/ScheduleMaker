@@ -260,10 +260,10 @@ public class SchedulesDAO {
 	 * @return True if successfully deleted, false if not
 	 * @throws Exception
 	 */
-	public boolean deleteSchedule(String scheduleId) throws Exception {
+	public boolean deleteSchedule(String secretCode) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE sId = ?;");
-			ps.setString(1, scheduleId);
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE secretCode = ?;");
+			ps.setString(1, secretCode);
 
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -513,8 +513,15 @@ public class SchedulesDAO {
 		}
 		// If new min
 		else {
+			String hour;
+			if(currentHr<10) {
+				hour = "0"+currentHr;
+			}
+			else {
+				hour = ""+currentHr;
+			}
 			currentMin += tsDuration;
-			return "" + currentHr + ":" + currentMin;
+			return "" + hour + ":" + currentMin;
 
 		}
 	}
