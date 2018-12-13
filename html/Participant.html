@@ -5,18 +5,21 @@
 <script type='text/javascript' src='../api.js'></script>
 <script type='text/javascript' src='../scheduleView.js'></script>
 <script type='text/javascript' src='../timeslots.js'></script>
+<script type='text/javascript' src='../delete.js'></script>
+<script type='text/javascript' src='../search.js'></script>
 
 <STYLE>
-body {background-color: lightskyblue}
-h1 {background-color: ghostwhite}
+body {background-color: rgb(117,200,174)}
+h1 {background-color: #5a3d2b;
+	color: rgb(244,161,39)}
 button {margin: 25px}
-th {background: darkgrey;}
+th {background: #f4a127;}
 tr, th, td {text-align: center;
 width: 4rem;
   height: 2rem;
   border: 1px solid black;}
   td{
-  background-color: ghostwhite;}
+  background-color: #ffecb4;}
   .button:hover {
     color: black;
     text-align: center;
@@ -37,36 +40,53 @@ width: 4rem;
 </SCRIPT>
 </HEAD>
 
-<h1>Scheduler</h1>
-<div><center><input type = "button" value = "Find Schedule" onClick = "nothing"> 
+<h1>Scheduler-Participant</h1>
+<div><center><input type = "button" value = "Find Schedule" onClick = "handleFindSchedulePartClick()"> 
 <input type = "button" value = "Previous Week" onClick = "nothing"> 
 <input type = "button" value = "Next Week" onClick = "nothing">
 <input type = "button" value = "Search for a Time" onClick = "nothing"> </div>
 
-<div>
-<form name="findScheduleForm" method="get" name="findSchedule">
-			Schedule Code <input name="Year" value="">
-		</form>
-</div>
 <div class="side">
 	<p>
 	Search for Time
 		<form name="findTimeForm" method="get" name="findTimeSlot">
-			Month<input name="Month" value="">
-			Day of Week<input name="DayofWeek" value="">
-			<p>Day of Month<input name="DayofMonth" value="">
-			TimeSlot<input name="TimeSlot" value=""> </p>
+			Month<select name="Month">
+  <option value="1">January</option>
+  <option value="2">February</option>
+  <option value="3">March</option>
+  <option value="4">April</option>
+  <option value="5">May</option>
+  <option value="6">June</option>
+  <option value="7">July</option>
+  <option value="8">August</option>
+  <option value="9">September</option>
+  <option value="10">October</option>
+  <option value="11">November</option>
+  <option value="12">December</option>
+</select>
+			Day of Week<select name="Day">
+  <option value="1">Monday</option>
+  <option value="2">Tuesday</option>
+  <option value="3">Wednesday</option>
+  <option value="4">Thursday</option>
+  <option value="5">Friday</option>
+  
+</select>
+			<p>Day of Month<input name="DayofMonth" type="number" min='1' max='31'>
+			TimeSlot<input name="TimeSlot" type="time" value=""> </p>
 			Year <input name="Year" value="">
 		</form>
- 	</p></div>
- 
-<button onclick="Javascript:displayPartSchedule()">GO</button>
-</div>
-
+<p>
 <div id="searchResultsDiv"><textarea rows="20" id="searchResults" readonly></textarea></div>
+</p>
+ 	</div>
+
+
+
 
 <div class="side" id="table"><table>
 
 </table>
 </div>
+
 </html>

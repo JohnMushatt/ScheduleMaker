@@ -46,7 +46,7 @@ function handleCreateClick(e){
 	}
 	
  	var createDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+day;
- 	var createTime = hour+":"+min;
+ 	var createTime = hour+":00";
 	var form = document.createScheduleForm;
 	var startDate = form.startDate.value;
 	var endDate = form.endDate.value;
@@ -86,8 +86,59 @@ function handleCreateClick(e){
 	    }
 	  };
 
-};
-
-function handleCreateMeetingClick(e){
-	
 }
+
+function handleCreateMeetingParticipantClick(code, sId, tsId){
+	var person = prompt("What is your name?");
+	var data = {};
+	data["scheduleID"] = sId;
+	data["timeslotID"] = tsId;
+	data["participantName"] = person;
+	
+	var js = JSON.stringify(data);
+	console.log("JS" + js);
+
+	var xhr = new XMLHttpRequest();
+	  xhr.open("POST", createMeeting_url, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processCreateMeetingResponse(code, tsId, person, xhr.responseText);
+	    } else {
+	      processCreateMeetingResponse(code, tsId, person, "N/A");
+	    }
+	  };
+
+}
+
+function processCreateMeetingResponse(code, tsId, name, result) {
+	  // Can grab any DIV or SPAN HTML element and can then manipulate its
+	  // contents dynamically via javascript
+	  console.log("result:" + result);
+	  var js = JSON.parse(result);
+	  //var js = JSON.parse('{"secretCode":"2018-12-08420514:404205","startDate":"2018-01-01","startTime":"10:00","endTime":"14:00","tsDuration":30,"accessCode":"c5b5fa14-6419-43ec-8d34-22be076bd18a","httpCode":200}');
+	  var responseCode = js.code;
+	  if(responseCode == 200){
+			var td = document.getElementById(tsId);
+			handleRefreshSchedulePartClick(code);
+	  var secretCode = js.secretCode;
+	  //var accessCode = js.accessCode;
+	  console.log(secretCode);
+	  alert("This is your code to cancel your meeting, keep it safe. " + secretCode);
+	  //alert("Send this code to those who you want to schedule meetings. " + accessCode);
+	  }else{
+		  alert("Improper Input Fields. Check Again.");
+	  }
+	  
+
+	  // Update computation result
+	 // document.statusForm.status.value = result;
+	 
+	}

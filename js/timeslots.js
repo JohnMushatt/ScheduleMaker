@@ -1,26 +1,32 @@
 /**
  * 
  */
-function closeSlot(num){
+function closeSlot(num, result){
 	console.log(num);
-	if(document.getElementById(num).innerHTML == "closed"){
-		document.getElementById(num).innerHTML  = "open";
-		document.getElementById(num).style.backgroundColor = "#ffecb4"
-	} else{
+	var js = JSON.parse(result);
+	var status = js["httpCode"];
+	if(status == 200){
+		if(document.getElementById(num).innerHTML == "closed"){
+			document.getElementById(num).innerHTML  = "open";
+			document.getElementById(num).style.backgroundColor = "#ffecb4"
+		} else{
 		
-	document.getElementById(num).innerHTML = "closed";
-	document.getElementById(num).style.backgroundColor = "#e5771e"
+			document.getElementById(num).innerHTML = "closed";
+			document.getElementById(num).style.backgroundColor = "#e5771e"
+	}
+	}else{
+		alert("TimeSlot failed to close");
 	}
 }
 
 function handleTimeSlotClick(val) {
 	  var data = {};
-	  data["tsId"] = val;
+	  data["timeSlotID"] = val;
 
 	  var js = JSON.stringify(data);
 	  console.log("JS:" + js);
 	  var xhr = new XMLHttpRequest();
-	  xhr.open("POST", delete_url, true);
+	  xhr.open("POST", editTimeSlot_url, true);
 
 	  // send the collected data as JSON
 	  xhr.send(js);
@@ -31,9 +37,9 @@ function handleTimeSlotClick(val) {
 	    console.log(xhr.request);
 	    if (xhr.readyState == XMLHttpRequest.DONE) {
 	      console.log ("XHR:" + xhr.responseText);
-	      processDeleteResponse(xhr.responseText);
+	      closeSlot(val, xhr.responseText);
 	    } else {
-	      processDeleteResponse("N/A");
+	      closeSlot(val, "N/A");
 	    }
 	  };
 	}

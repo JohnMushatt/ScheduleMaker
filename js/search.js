@@ -76,14 +76,14 @@ function handleFindScheduleClick() {
 	    
 	    if (xhr.readyState == XMLHttpRequest.DONE) {
 	      console.log ("XHR:" + xhr.responseText);
-	      processFindResponse(xhr.responseText);
+	      processFindResponse(secretCode, xhr.responseText);
 	    } else {
-	      processFindResponse("N/A");
+	      processFindResponse(secretCode, "N/A");
 	    }
 	  };
 	}
 
-function processFindResponse(result) {
+function processFindResponse(code, result) {
 	  // Can grab any DIV or SPAN HTML element and can then manipulate its
 	  // contents dynamically via javascript
 	  console.log("result:" + result);
@@ -95,13 +95,123 @@ function processFindResponse(result) {
 	  var endTime = js["endTime"];
 	  var startDate = js["startingDateOfWeek"];
 	  var statusCode = js["httpCode"];
-	  var list = js["timeslotsInWeek"];
+	  var tslist = js["timeslotsInWeek"];
+	  var meetinglist = js["meetingsInWeek"];
 	  
 	  if (statusCode == 200) {
 	    // Update computation result
-		  displayOrgSchedule(tsDuration, startTime, endTime, startDate, list);
+		  displayOrgSchedule(code, tsDuration, startTime, endTime, startDate, tslist, meetinglist);
 	  } else {
 	    var msg = js["errorMessage"];
 	    alert("Schedule probably doesn't exist.");
 	  }
+	}
+
+function handleFindSchedulePartClick() {
+	  var accessCode = prompt("Enter your access code here:", "Oooh Access");
+	  var data = {};
+	  data["accessCode"] = accessCode;
+
+	  var js = JSON.stringify(data);
+	  console.log("JS:" + js);
+	  
+	  var xhr = new XMLHttpRequest();
+	  xhr.open("POST", participantReview_url, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processPartFindResponse(accessCode, xhr.responseText);
+	    } else {
+	      processPartFindResponse(accessCode, "N/A");
+	    }
+	  };
+	}
+
+function processPartFindResponse(code, result) {
+	  // Can grab any DIV or SPAN HTML element and can then manipulate its
+	  // contents dynamically via javascript
+	  console.log("result:" + result);
+	  var js = JSON.parse(result);
+
+	  var tsDuration = js["tsDuration"];
+	  var sId = js["scheduleId"];
+	  var scheduleId = js["scheduleId"];
+	  var startTime = js["startTime"];
+	  var endTime = js["endTime"];
+	  var startDate = js["startingDateOfWeek"];
+	  var statusCode = js["httpCode"];
+	  var tslist = js["timeslotsInWeek"];
+	  var meetinglist = js["meetingsInWeek"];
+	  
+	  if (statusCode == 200) {
+	    // Update computation result
+		  displayParticipantSchedule(code, sId, tsDuration, startTime, endTime, startDate, tslist, meetinglist);
+	  } else {
+	    var msg = js["errorMessage"];
+	    alert("Schedule probably doesn't exist.");
+	  }
+	}
+
+function handleRefreshSchedulePartClick(accessCode) {
+	  //var accessCode = prompt("Enter your access code here:", "Oooh Access");
+	  var data = {};
+	  data["accessCode"] = accessCode;
+
+	  var js = JSON.stringify(data);
+	  console.log("JS:" + js);
+	  
+	  var xhr = new XMLHttpRequest();
+	  xhr.open("POST", participantReview_url, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processPartFindResponse(accessCode, xhr.responseText);
+	    } else {
+	      processPartFindResponse(accessCode, "N/A");
+	    }
+	  };
+	}
+
+function handleRefreshScheduleClick(secretCode) {
+	  //var accessCode = prompt("Enter your access code here:", "Oooh Access");
+	  var data = {};
+	  data["secretCode"] = secretCode;
+
+	  var js = JSON.stringify(data);
+	  console.log("JS:" + js);
+	  
+	  var xhr = new XMLHttpRequest();
+	  xhr.open("POST", reviewSchedule_url, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processFindResponse(secretCode, xhr.responseText);
+	    } else {
+	      processFindResponse(secretCode, "N/A");
+	    }
+	  };
 	}
