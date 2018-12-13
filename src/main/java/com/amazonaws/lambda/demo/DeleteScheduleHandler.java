@@ -21,10 +21,11 @@ import com.google.gson.Gson;
 public class DeleteScheduleHandler implements RequestStreamHandler {
 	LambdaLogger logger;
 	Schedule currentSchedule;
-	@Override
-    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 
-    	logger = context.getLogger();
+	@Override
+	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
+
+		logger = context.getLogger();
 		logger.log("Loading Java Lambda handler to create schedule");
 
 		JSONObject headerJson = new JSONObject();
@@ -63,11 +64,15 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			SchedulesDAO dao = new SchedulesDAO();
 			DeleteScheduleResponse resp;
 			try {
-				if (dao.deleteSchedule(req.secretCode)) {
-					resp = new DeleteScheduleResponse(200);
-				} else {
-					resp = new DeleteScheduleResponse(403);
+				if (req.secretCode == null && dao.deleteSchedules(req.days)) {
+						resp = new DeleteScheduleResponse(200);
 
+				}
+				else if (dao.deleteSchedule(req.secretCode)) {
+					resp = new DeleteScheduleResponse(200);
+				}
+				else {
+					resp = new DeleteScheduleResponse(403);
 				}
 			} catch (Exception e) {
 				resp = new DeleteScheduleResponse(403);
@@ -75,8 +80,6 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			responseJson.put("body", new Gson().toJson(resp));
 		}
 
-		// responseJson.put("body", new Gson().toJson(resp));
-		// System.out.println("JSON RESPONSE\n" + responseJson.toJSONString());
 		logger.log("end result:" + responseJson.toJSONString());
 
 		logger.log(responseJson.toJSONString());
@@ -85,8 +88,6 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		writer.write(responseJson.toJSONString());
 		writer.close();
 
-		System.out.println("THIS IS THE JSON RESPONSE\n\n" + responseJson.toString());
-    }
-
+	}
 
 }

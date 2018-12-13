@@ -167,7 +167,7 @@ public class TimeSlotsDAO {
 			ps.setString(7, timeSlot.scheduleID);
 			ps.setString(8, timeSlot.date);
 			ps.execute();
-			System.out.println("Succesfully added time slot: startTime= " + timeSlot.startTime + "\tendTime= " + timeSlot.endTime + "\tdate= " + timeSlot.date);
+			System.out.println("Succesfully added time slot: startTime= " + timeSlot.startTime + "\tendTime= " + timeSlot.endTime + "\tdate= " + timeSlot.date + "tsId=" +timeSlot.timeSlotID);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -525,7 +525,52 @@ public class SchedulesDAO {
 
 		}
 	}
+	public boolean deleteSchedules(int days) throws Exception{
+		try {
+			//Setup query
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules;");
+			//Execute and cache
+			ResultSet schedules = ps.executeQuery();
+			//Create array list of scheduleIDs to delete
+			ArrayList<String> deletableSchedules = new ArrayList<>();
+			//While there are more rows to process
+			while(schedules.next()) {
+				//Generate schedule from row info
+				Schedule s = generateSchedule(schedules);
+				//Check if the current Schedule is deletable
+				if(isOlder(s.initialDate,days)) {
+					//Add it
+					deletableSchedules.add(s.scheduleId);
+				}
+			}
+			int numAffected =0;
+			ps = conn.prepareStatement("DELETE FROM Schedules WHERE sId=?;");
+			for(int i =0; i < deletableSchedules.size();i++) {
+				ps.setString(1, deletableSchedules.get(i));
+				numAffected +=ps.executeUpdate();
+				System.out.println("Deleted Schedule with id: " + deletableSchedules.get(i));
+			}
+			System.out.println("Deleted " + numAffected + " schedule(s)");
+			return numAffected==deletableSchedules.size();
 
+
+		}
+		catch(Exception e) {
+			throw new Exception("Failed to insert schedule: " + e.getMessage());
+		}
+	}
+	public boolean isOlder(String d1, int days) {
+		Integer y = new Integer(d1.substring(0, 4));
+		Integer m = new Integer(d1.substring(5,7));
+		Integer d = new Integer(d1.substring(8));
+		LocalDate currentDate = new LocalDate();
+		LocalDate cutOff = currentDate.minusDays(days);
+		LocalDate scheduleDate = new LocalDate(y,m,d);
+		if(scheduleDate.compareTo(cutOff)<0) {
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Convert integer form of next date to string for db and object
 	 *

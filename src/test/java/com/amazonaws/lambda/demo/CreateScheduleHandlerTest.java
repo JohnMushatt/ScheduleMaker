@@ -32,8 +32,8 @@ public class CreateScheduleHandlerTest {
         CreateScheduleHandler handler = new CreateScheduleHandler();
 
         CreateScheduleRequest csr = new CreateScheduleRequest("2018-01-20",
-        		"02:00", "2019-01-28","2019-02-08",
-        		"08:00","16:00",15,"SampleSchedule");
+        		"02:00", "2019-01-03","2019-01-04",
+        		"15:00","17:00",60,"SampleSchedule");
         String addRequest = new Gson().toJson(csr);
         String jsonRequest = new Gson().toJson(new PostRequest(addRequest));
 

@@ -63,7 +63,7 @@ public class MeetingsDAO {
 		if(secretCode!=null) {
 			try {
 				System.out.println("Deleting via secret code");
-				PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE secretCode = ?;");
+				PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE secretCode =?;");
 				ps.setString(1, secretCode);
 				String id = this.getTimeSlotID(meetingID);
 				int numAffected = ps.executeUpdate();

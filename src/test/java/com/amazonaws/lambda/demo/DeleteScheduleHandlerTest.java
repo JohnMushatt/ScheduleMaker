@@ -28,17 +28,35 @@ public class DeleteScheduleHandlerTest {
 	}
 
 	@Test
-	public void testDeleteMeetingHandler() throws IOException {
+	public void testDeleteSchedules() throws IOException{
+		System.out.println("RUNNING testDeleteSchedules");
+
+		DeleteScheduleHandler handler = new DeleteScheduleHandler();
+		DeleteScheduleRequest dsr = new DeleteScheduleRequest(0);
+
+		String deleteMeetingRequest = new Gson().toJson(dsr);
+		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
+		InputStream deleteInput = new ByteArrayInputStream(deleteJsonRequest.getBytes());
+		OutputStream deleteOutput = new ByteArrayOutputStream();
+
+		handler.handleRequest(deleteInput, deleteOutput, createContext("deleteSchedules"));
+		PostResponse post = new Gson().fromJson(deleteOutput.toString(), PostResponse.class);
+		DeleteMeetingResponse resp = new Gson().fromJson(post.body, DeleteMeetingResponse.class);
+	}
+
+	@Test
+	public void testDeleteScheduleHandler() throws IOException {
 		System.out.println("RUNNING testDeleteMeetingHandler");
 
 		DeleteScheduleHandler deleteHandler = new DeleteScheduleHandler();
-		DeleteScheduleRequest dmr = new DeleteScheduleRequest("9b8c2931763d4324ae62f49e139b2376");
-		String deleteMeetingRequest = new Gson().toJson(dmr);
+		DeleteScheduleRequest dsr = new DeleteScheduleRequest("9b8c2931763d4324ae62f49e139b2376");
+		String deleteMeetingRequest = new Gson().toJson(dsr);
 		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
 		InputStream deleteInput = new ByteArrayInputStream(deleteJsonRequest.getBytes());
 		OutputStream deleteOutput = new ByteArrayOutputStream();
 
 		deleteHandler.handleRequest(deleteInput, deleteOutput, createContext("deleteMeeting"));
 		PostResponse post = new Gson().fromJson(deleteOutput.toString(), PostResponse.class);
-        DeleteMeetingResponse resp = new Gson().fromJson(post.body, DeleteMeetingResponse.class);	}
+		DeleteMeetingResponse resp = new Gson().fromJson(post.body, DeleteMeetingResponse.class);
+	}
 }
