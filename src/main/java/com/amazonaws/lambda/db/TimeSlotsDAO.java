@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
 import com.amazonaws.lambda.model.TimeSlot;
 
 public class TimeSlotsDAO {
@@ -17,7 +19,93 @@ public class TimeSlotsDAO {
 			conn = null;
 		}
 	}
-
+	public boolean editByDate(String secretCode, String date, int state) throws Exception {
+		try {
+			SchedulesDAO s = new SchedulesDAO();
+			//Get scheduleID
+			String scheduleID = s.getScheduleId(secretCode);
+			PreparedStatement ps = conn.prepareStatement("UPDATE TimeSlots SET isOpen=? WHERE sId=? AND date=?;");
+			if(state==1) {
+				ps.setInt(1, 1);
+			}
+			else {
+				ps.setInt(1, 0);
+			}
+			ps.setString(2, scheduleID);
+			ps.setString(3, date);
+			int numAffected = ps.executeUpdate();
+			ps.close();
+			return numAffected!=0;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting time slot: " + e.getMessage());
+		}
+	}
+	/**
+	 * Edit the states of all time slots on a single day
+	 * @param secretCode
+	 * @param date
+	 * @param state
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean editByStartTime(String secretCode, String date, String time,int state) throws Exception {
+		try {
+			SchedulesDAO s = new SchedulesDAO();
+			//Get scheduleID
+			String scheduleID = s.getScheduleId(secretCode);
+			PreparedStatement ps = conn.prepareStatement("UPDATE TimeSlots SET isOpen=? WHERE sId=? AND startTime=? AND date=?;");
+			ps.setInt(1, state);
+			ps.setString(2, scheduleID);
+			ps.setString(3, time);
+			int numAffected = 0;
+			Integer year = new Integer(date.substring(0, 4));
+			Integer month = new Integer(date.substring(5,7));
+			Integer day = new Integer(date.substring(8));
+			LocalDate temp = new LocalDate(year, month, day);
+			for(int i = 0; i < 5; i++) {
+				ps.setString(4, date);
+				numAffected+=ps.executeUpdate();
+				temp=temp.plusDays(1);
+				date = getCurrentDate(temp.getYear(),temp.getMonthOfYear(),temp.getDayOfMonth());
+			}
+			ps.close();
+			return numAffected!=0;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting time slot: " + e.getMessage());
+		}
+	}
+	/**
+	 * Get string form of current date
+	 *
+	 * @param y
+	 *            Year value
+	 * @param m
+	 *            Month value
+	 * @param d
+	 *            Day value
+	 * @return String form of current date
+	 */
+	private static String getCurrentDate(int y, int m, int d) {
+		String date = "";
+		String month = "";
+		String day = "";
+		if (m < 10) {
+			month = "0" + m;
+		} else {
+			month = "" + m;
+		}
+		if (d < 10) {
+			day = "0" + d;
+		} else {
+			day = "" + d;
+		}
+		date = y + "-" + month + "-" + day;
+		return date;
+	}
 	public TimeSlot getTimeSlot(String timeSlotId) throws Exception {
 		try {
 			TimeSlot timeSlot = null;

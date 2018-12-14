@@ -28,6 +28,25 @@ public class EditTimeSlotHandlerTest {
         return ctx;
     }
     @Test
+    public void testEditDateTimeSlots() throws IOException {
+    	System.out.println("RUNNING testEditDateTimeSlots");
+    	EditTimeSlotHandler handler = new EditTimeSlotHandler();
+        EditTimeSlotRequest etsr = new EditTimeSlotRequest("7c6aca67e1134f93a77b97c58feacb31","2017-11-28","15:00",0);
+
+        String addRequest = new Gson().toJson(etsr);
+        String jsonRequest = new Gson().toJson(new PostRequest(addRequest));
+
+
+
+        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+
+        OutputStream output = new ByteArrayOutputStream();
+        handler.handleRequest(input, output, createContext("editTimeSlot"));
+
+        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+        EditTimeSlotResponse  resp = new Gson().fromJson(post.body, EditTimeSlotResponse.class);
+    }
+    @Test
     public void testEditTimeSlotHandler() throws IOException {
     	System.out.println("Running testEditTimeSlotHandler");
         EditTimeSlotHandler handler = new EditTimeSlotHandler();

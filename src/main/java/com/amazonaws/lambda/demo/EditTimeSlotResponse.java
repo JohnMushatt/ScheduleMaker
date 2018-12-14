@@ -15,7 +15,6 @@ public class EditTimeSlotResponse {
 		this.body=body;
 		this.httpCode=code;
 	}
-
 	@Override
 	public String toString() {
 		return "EditTimeSlotResponse("+isOpen+","+httpCode+")";

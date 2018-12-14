@@ -32,7 +32,7 @@ public class DeleteScheduleHandlerTest {
 		System.out.println("RUNNING testDeleteSchedules");
 
 		DeleteScheduleHandler handler = new DeleteScheduleHandler();
-		DeleteScheduleRequest dsr = new DeleteScheduleRequest(0);
+		DeleteScheduleRequest dsr = new DeleteScheduleRequest(-1000);
 
 		String deleteMeetingRequest = new Gson().toJson(dsr);
 		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
@@ -49,7 +49,7 @@ public class DeleteScheduleHandlerTest {
 		System.out.println("RUNNING testDeleteMeetingHandler");
 
 		DeleteScheduleHandler deleteHandler = new DeleteScheduleHandler();
-		DeleteScheduleRequest dsr = new DeleteScheduleRequest("9b8c2931763d4324ae62f49e139b2376");
+		DeleteScheduleRequest dsr = new DeleteScheduleRequest("308d2daa04a34e99934a92090cbc8bc9");
 		String deleteMeetingRequest = new Gson().toJson(dsr);
 		String deleteJsonRequest = new Gson().toJson(new PostRequest(deleteMeetingRequest));
 		InputStream deleteInput = new ByteArrayInputStream(deleteJsonRequest.getBytes());
