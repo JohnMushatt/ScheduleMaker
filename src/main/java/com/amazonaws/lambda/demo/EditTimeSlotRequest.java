@@ -10,6 +10,12 @@ public class EditTimeSlotRequest {
 	public EditTimeSlotRequest(String timeSlotID) {
 		this.timeSlotID=timeSlotID;
 	}
+	/**
+	 * Edit by date
+	 * @param secretCode
+	 * @param date
+	 * @param state
+	 */
 	public EditTimeSlotRequest(String secretCode, String date, int state) {
 		this.secretCode=secretCode;
 		this.date=date;
