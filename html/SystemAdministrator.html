@@ -1,10 +1,18 @@
 <html>
 <HEAD>
+<script type='text/javascript' src='../create.js'></script>
+<script type='text/javascript' src='../api.js'></script>
+<script type='text/javascript' src='../scheduleView.js'></script>
+<script type='text/javascript' src='../timeslots.js'></script>
+<script type='text/javascript' src='../delete.js'></script>
+<script type='text/javascript' src='../search.js'></script>
+
 <STYLE>
-body {background-color: lightskyblue}
-h1 {background-color: ghostwhite}
+body {background-color: rgb(117,200,174)}
+h1 {background-color: #5a3d2b;
+color: rgb(244,161,39)}
 button {margin: 25px}
-th {background: lightgrey;
+th {background: #f4a127;
 bordercolor: white}
 tr, th, td {text-align: center;
 width: 4rem;
@@ -24,18 +32,17 @@ width: 4rem;
 
 <h1>Scheduler</h1>
 <h3>System Admin</h3>
-<center>
-	<button>Delete Old Schedule</button> 
-	<button>Find Meeting Schedule</button> 
-</center>
+
 
 <div class="side">
 	<form name = "deleteOld">
-		Days Old<input name="daysOld" value="">
+		Days Old<input name="daysOld" type="number" min='0' value="">
 	</form>
-	<form name="findSchedulesForm" method="get" name="findSchedules">
-		Hours Old<input name="hoursOld" value="">
+	<button onclick='javascript:handleDeleteSysAdminClick(this)'>Delete Old Schedule</button> 
+	<form name="findSchedulesForm" name="findSchedules">
+		Hours Old<input name="hoursOld" type="number" min='0' value="">
 	</form>
+	<button onclick='javascript:handleRetrieveSchedulesClick(this)'>Find Meeting Schedule</button>
 
 <div class="side"><p><TEXTAREA rows="30" cols="80" readonly>
 </TEXTAREA>

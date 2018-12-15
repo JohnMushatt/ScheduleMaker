@@ -56,22 +56,24 @@ td {
 </HEAD>
 
 <h1>Scheduler-Organizer</h1>
+<div id='buttonBar' >
 <center>
 	<input type="button" value="Create Schedule" onClick="JavaScript:handleCreateClick(this)">
 	<input type="button" value="Find Schedule" onClick="JavaScript:handleFindScheduleClick()">
-	 <input type="button" value="Find Week" onClick="JavaScript:handleFindWeekClick(this)"> 
 		<input type="button" value="Extend Date" onClick="JavaScript:handleExtendDateClick(this)"> 
 		<input type="button" value="Delete Schedule" onClick="JavaScript:handleDeleteScheduleClick()">
 </center>
+</div>
 
+Secret Code:<p id="secretCode"><p> 
 <div class="side">
 	<form name="createScheduleForm" method="post" name="createSchedule">
 		<p>Schedule Parameters</p>
-		Start Date<input  type="date" name="startDate" value="2018-01-01" /> End Date<input  type="date"
+		Start Date<input  type="date" name="startDate" value="2018-01-01" /> End Date<input type="date"
 			name="endDate" value="2018-01-01" /> Start Time<input type="time"
-			name="startTime" />
+			name="startTime" required>
 		<p>
-			End Time<input type="time" name="endTime" /> Time Slot
+			End Time<input type="time" name="endTime" required> Time Slot
 			Duration <select name="slotDuration">
   <option value="10">10 Minutes</option>
   <option value="15">15 Minutes</option>
@@ -79,15 +81,10 @@ td {
   <option value="30">30 Minutes</option>
   <option value="60">60 Minutes</option>
 </select>
-Schedule Name<input name="name" />
+Schedule Name<input name="name"  required>
 		</p>
 		<input type="button" value="Create Schedule"
 			onClick="JavaScript:handleCreateClick(this)">
-	</form>
-
-	<form name="findForm" method="get" name="findWeek">
-		<p>Find Week</p>
-		Date <input type="date" name="week" value="" />
 	</form>
 
 	<form name="modifyForm" method="post" name="modifySchedule">
@@ -102,15 +99,15 @@ Schedule Name<input name="name" />
 	<input name="status" readonly />
 </form>
 
-<!-- <button onclick="Javascript:displayOrgSchedule()">GO</button>-->
+
 </div>
 
 <div class="side" id="table">
 
 
-	<!-- </table> -->
+	
 </div>
-<!-- <table>
- <td class='button' id="cf4a4c6c715b4ad6bc1f843ddc2c64f3" style='background-color:#E5771E' onclick='javascript:handleTimeSlotClick("cf4a4c6c715b4ad6bc1f843ddc2c64f3")'>open</td>
-</table>  -->
+
+<p id='sId' hidden=true>Hi</p>
+<p id='startDate' hidden=true>yo</p>
 </html>

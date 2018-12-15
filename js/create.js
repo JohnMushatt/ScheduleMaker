@@ -90,6 +90,9 @@ function handleCreateClick(e){
 
 function handleCreateMeetingParticipantClick(code, sId, tsId){
 	var person = prompt("What is your name?");
+	if(person == null){
+		return null;
+	}
 	var data = {};
 	data["scheduleID"] = sId;
 	data["timeslotID"] = tsId;
@@ -127,7 +130,8 @@ function processCreateMeetingResponse(code, tsId, name, result) {
 	  var responseCode = js.code;
 	  if(responseCode == 200){
 			var td = document.getElementById(tsId);
-			handleRefreshSchedulePartClick(code);
+			var date = document.getElementById('startDate').innerHTML 
+			handleRefreshSchedulePartClick(code, date);
 	  var secretCode = js.secretCode;
 	  //var accessCode = js.accessCode;
 	  console.log(secretCode);
@@ -142,3 +146,39 @@ function processCreateMeetingResponse(code, tsId, name, result) {
 	 // document.statusForm.status.value = result;
 	 
 	}
+
+function handleMeetingClick(e){
+	var person = prompt("What is your name?");
+	if(person == null){
+		return null;
+	}
+	var form = document.meetingForm;
+	var tsId = form.tsId.value;
+	
+	var sId = document.getElementById('sId').innerHTML;
+	var data = {};
+	data["scheduleID"] = sId;
+	data["timeslotID"] = tsId;
+	data["participantName"] = person;
+	
+	var js = JSON.stringify(data);
+	console.log("JS" + js);
+
+	var xhr = new XMLHttpRequest();
+	  xhr.open("POST", createMeeting_url, true);
+
+	  // send the collected data as JSON
+	  xhr.send(js);
+
+	  // This will process results and update HTML as appropriate. 
+	  xhr.onloadend = function () {
+	    console.log(xhr);
+	    console.log(xhr.request);
+	    if (xhr.readyState == XMLHttpRequest.DONE) {
+	      console.log ("XHR:" + xhr.responseText);
+	      processCreateMeetingResponse(code, tsId, person, xhr.responseText);
+	    } else {
+	      processCreateMeetingResponse(code, tsId, person, "N/A");
+	    }
+	  };
+}

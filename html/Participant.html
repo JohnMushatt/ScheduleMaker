@@ -41,16 +41,18 @@ width: 4rem;
 </HEAD>
 
 <h1>Scheduler-Participant</h1>
-<div><center><input type = "button" value = "Find Schedule" onClick = "handleFindSchedulePartClick()"> 
+<div id='buttonBar' ><center><input type = "button" value = "Find Schedule" onClick = "handleFindSchedulePartClick()"> 
 <input type = "button" value = "Previous Week" onClick = "nothing"> 
 <input type = "button" value = "Next Week" onClick = "nothing">
-<input type = "button" value = "Search for a Time" onClick = "nothing"> </div>
-
+<input type = "button" value = "Search for a Time" onClick ='javascript:handleTimeSearchClick(this)'>
+</center>
+ </div>
 <div class="side">
 	<p>
 	Search for Time
 		<form name="findTimeForm" method="get" name="findTimeSlot">
 			Month<select name="Month">
+  <option value=null>None</option>
   <option value="1">January</option>
   <option value="2">February</option>
   <option value="3">March</option>
@@ -65,6 +67,7 @@ width: 4rem;
   <option value="12">December</option>
 </select>
 			Day of Week<select name="Day">
+ <option value=null>None</option>
   <option value="1">Monday</option>
   <option value="2">Tuesday</option>
   <option value="3">Wednesday</option>
@@ -77,7 +80,11 @@ width: 4rem;
 			Year <input name="Year" value="">
 		</form>
 <p>
-<div id="searchResultsDiv"><textarea rows="20" id="searchResults" readonly></textarea></div>
+<div id="searchResultsDiv"><textarea rows="20" cols="30" id="searchResults" readonly></textarea></div>
+<form name='meetingForm' >
+<input type='text' value='type code here' name="tsId">
+</form>
+<button onclick='javascript:handleMeetingClick(this)'>Submit</button>
 </p>
  	</div>
 
@@ -88,5 +95,8 @@ width: 4rem;
 
 </table>
 </div>
+
+<p id='sId' hidden=true>Hi</p>
+<p id='startDate' hidden=true>yo</p>
 
 </html>
